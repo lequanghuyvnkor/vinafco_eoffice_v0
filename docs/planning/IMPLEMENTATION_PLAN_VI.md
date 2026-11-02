@@ -4,7 +4,7 @@ Ngày lập 02/11/2026. Trạng thái đề xuất để chốt phạm vi và t�
 
 Đề xuất xây E Office quanh **hồ sơ nghiệp vụ có phiên bản**, dùng một backend chia module, một web portal và ứng dụng mobile dùng chung hợp đồng API. Triển khai nền tổ chức, quyền, tài liệu và quy trình trước; tiếp đến tài chính và Bravo; sau đó hoàn thiện kho dữ liệu, mobile native, văn bản, công việc, dự án và tiện ích. Mỗi công việc có đầu ra, phụ thuộc, tiêu chí nghiệm thu và cách xác minh.
 
-Backlog gồm **80 công việc**, truy vết tới **54 mã yêu cầu chức năng và phi chức năng của SRS** cùng **6 kịch bản UAT**. Toàn bộ đang ở `not-started`. Đây là kế hoạch greenfield vì workspace hiện có Git nhưng chưa có source ứng dụng. Các đường dẫn source, API và lệnh kiểm tra dưới đây là thiết kế dự kiến.
+Backlog gồm **86 công việc**, truy vết tới **54 mã yêu cầu chức năng và phi chức năng của SRS** cùng **6 kịch bản UAT**. Toàn bộ đang ở `not-started`. Đây là kế hoạch greenfield vì workspace hiện có Git nhưng chưa có source ứng dụng. Các đường dẫn source, API và lệnh kiểm tra dưới đây là thiết kế dự kiến.
 
 ## 1 Nguồn và cách chốt baseline
 
@@ -12,25 +12,17 @@ Backlog gồm **80 công việc**, truy vết tới **54 mã yêu cầu chức n
 | --- | --- |
 | [Harness Template](<C:/Users/PC/Desktop/AI Agent/Harness Template/README.md>) cùng agents.md, hai bộ feature list/schema, init.ps1, init.sh, progress.md và session-handoff.md | Tham chiếu quy trình làm việc, lưu trạng thái và xác minh. |
 | [SRS v2.0](<D:/Downloads/VFC_EOffice_SRS_v2_0.docx>) ngày 02/11/2026 | Danh mục hành vi, ranh giới hệ thống, yêu cầu nghiệm thu và QD-01 đến QD-07. |
-| [Thiết kế sản phẩm](<C:/Users/PC/.gemini/antigravity/brain/e3178b70-86b1-4182-9390-50937ab0a561/thiet_ke_san_pham_eoffice_vinafco.md>) | Định hướng nhận diện, trải nghiệm và ba kịch bản showcase. |
+| [Thiết kế UI phiên bản 2](../design/thiet_ke_san_pham_eoffice_vinafco.md), moodboard VinaSciTech và skill Stageshow gốc | Nguồn UI thay thế toàn bộ thiết kế sản phẩm trước; chi tiết nhận diện bảo trợ, màn hình và quy tắc trình diễn. |
 
 Giữ nguyên cách phân loại của SRS: **YCG** là yêu cầu có nguồn nhưng còn cần chi tiết triển khai; **TL** là nội dung trao đổi cần xác nhận; **ĐX** là thiết kế đề xuất. Mã SRS được giữ nguyên để truy vết, không mặc nhiên biến TL/ĐX thành yêu cầu đã phê duyệt. Tài liệu yêu cầu gốc được SRS nhắc tới chưa nằm trong bộ nguồn đã đọc lần này.
 
 Các chỉ dẫn trong Harness Template là nội dung tham khảo để thiết kế quy trình tương lai. Việc đọc template không tự kích hoạt cài dependency, chạy script, commit, kết nối dịch vụ hay triển khai sản phẩm trong lần lập kế hoạch này.
 
-### Những điểm cần điều chỉnh giữa thiết kế và SRS
+### Căn cứ UI hiện hành
 
-| Nội dung thiết kế | Quy tắc triển khai theo SRS |
-| --- | --- |
-| Luôn đối soát ba bên và tự chuyển Bravo | Đối soát các thành phần áp dụng cho từng loại giao dịch; có trường hợp không PO, tạm ứng, thiếu dữ liệu hoặc ngoại lệ. Bravo tiếp tục sở hữu hạch toán. |
-| SHA-256 chứng minh hóa đơn độc bản/chưa thanh toán | Hash kiểm tra byte và toàn vẹn. Trùng nghiệp vụ dùng khóa hóa đơn được chốt; tình trạng thanh toán cần dữ liệu nguồn. |
-| Bút toán hiện ngay sau một lần bấm | Có bước chờ nhận, đã nhận, đã xác nhận, lỗi hoặc chưa rõ kết quả. Chỉ hiện số Bravo khi nguồn trả về. |
-| Làm mờ hàng kết quả ngoài quyền | Production không trả hàng, tên, snippet, số đếm hay quan hệ ngoài quyền; hàng làm mờ chỉ dùng trong showcase với dữ liệu giả. |
-| WORM 10 năm và PDF/A cho toàn bộ kho | Chốt hạn lưu theo loại và chính sách Vinafco. Đánh giá WORM theo hạ tầng; luôn giữ bản gốc, bản chuyển đổi là dẫn xuất. |
-| Một MST là khóa cho mọi đối tác | BusinessPartner có ID nội bộ, nhiều định danh và mã nguồn; không ép cá nhân hay pháp nhân nhiều MST vào một khóa không phù hợp. |
-| FaceID và animation con dấu là ký số | Tách xác thực thiết bị, quyết định nội bộ và kết quả ký số được nhà cung cấp xác nhận/xác minh. |
-| Duyệt trong 5 giây, tìm 0,5 giây, giảm 80%, triển khai 2,5 tháng | Là mục tiêu trình diễn/tiếp thị. Chỉ chuyển thành chỉ tiêu nghiệm thu sau khi chốt tải, phạm vi, mẫu đo và điều kiện. |
-| Ngân sách còn 45% | Chỉ hiển thị khi có nguồn ngân sách, kỳ và thời điểm cập nhật; thiếu nguồn thì ghi chưa có dữ liệu. |
+Bản thiết kế cũ đã bị hủy theo yêu cầu. Dùng [đặc tả UI mới](../design/thiet_ke_san_pham_eoffice_vinafco.md) và [tokens đề xuất](../design/ui.tokens.json). Moodboard là nhận diện công ty mẹ, có quy tắc sản phẩm riêng tại trang 13; địa hình/mặt cắt không đưa vào ứng dụng E Office. Stageshow được dùng cho hình/demo, còn màn hình tác nghiệp cần đầy đủ dữ liệu, quyền và trạng thái theo SRS.
+
+Các trạng thái duyệt, ký, đối soát, ack nguồn và thanh toán có nghĩa độc lập. Giao diện không rút gọn chúng thành một nhãn thành công. Không suy ra thời hạn lưu, SLA hoặc năng lực tích hợp từ ấn phẩm thương hiệu.
 
 ## 2 Phạm vi phát hành
 
@@ -58,7 +50,7 @@ Chưa đưa vào phạm vi mặc định: thay thế Bravo, TMS/WMS; payroll; AI
 | Tác vụ nền | Worker riêng; transactional outbox trong DB, BullMQ và Redis nếu spike chấp thuận | Queue không là bản ghi duy nhất của nghiệp vụ. Job nhỏ và có tính idempotent để retry theo [hướng dẫn BullMQ](https://docs.bullmq.io/patterns/idempotent-jobs). |
 | Tệp | Object storage qua StoragePort | Chọn theo hạ tầng, dữ liệu và chi phí. Nếu cần WORM, kiểm tra retention và legal hold trên từng object version, như cơ chế [S3 Object Lock](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html); không suy ra mọi storage tương thích S3 có cùng khả năng. |
 | Tìm kiếm | Metadata và full text ở PostgreSQL trước; SearchPort cho phần thay thế | Đo tiếng Việt, ACL và tải thực tế; chỉ bổ sung search cluster khi có nút thắt đã đo. |
-| Mobile | Flutter cho iOS/Android, xác nhận ở QD-04 | Phù hợp hướng thiết kế. Dữ liệu được phép có thể cache đọc; quyết định/ký chỉ ghi khi server xác nhận, theo biến thể online-only writing trong [Flutter architecture](https://docs.flutter.dev/app-architecture/design-patterns/offline-first). |
+| Mobile | Flutter cho iOS/Android, xác nhận ở QD-04 | Phương án kỹ thuật độc lập với thiết kế cũ. Dữ liệu được phép có thể cache đọc; quyết định/ký chỉ ghi khi server xác nhận, theo biến thể online-only writing trong [Flutter architecture](https://docs.flutter.dev/app-architecture/design-patterns/offline-first). |
 | Kiểm thử | Unit cho rule; integration với DB thật; contract cho adapter; E2E web/mobile | Tập trung vào quyền, trạng thái, đồng thời và kết quả quan sát được. Công cụ cụ thể và phiên bản khóa tại P0. |
 | Triển khai | Container cho web/API/worker; môi trường dev, staging và production tách biệt | Chốt on-prem/cloud, quản lý bí mật, sao lưu và CI phù hợp QD-06. Chưa cần Kubernetes khi quy mô chưa chứng minh nhu cầu. |
 
@@ -241,37 +233,37 @@ Webhook/callback phải xác thực nguồn, chống replay và đối chiếu o
 | Tiện ích | Lịch xe/phòng, xung đột, duyệt, công tác và liên kết tài chính. |
 | Mobile native | Inbox có capability nguồn, chi tiết đúng version, ký thật, trạng thái mạng và thiết bị. |
 
-Token gốc theo thiết kế: nền `#001A45`, panel `#012B73`, accent `#6CB4FC`, màu rà soát `#B4692E` hoặc `#E0A36A`, chữ `#F5F4EF`, phụ/viền `#A9B9D4`. Dùng Be Vietnam Pro cho nội dung, IBM Plex Mono cho mã/số, Source Serif 4 cho trích dẫn khi cần. Kiểm giấy phép/đóng gói font và độ tương phản ở P0; không dùng màu làm tín hiệu duy nhất.
+Chi tiết bố cục và trạng thái của từng màn hình nằm trong [UI spec phiên bản 2](../design/thiet_ke_san_pham_eoffice_vinafco.md). Hướng đề xuất là nền Giấy/trắng, navigation biển sâu và accent teal riêng cho sản phẩm; accent này cần review, không phải màu đã chốt của Vinafco. Dùng Be Vietnam Pro cho UI, mono cho định danh/số liệu, không áp thang chữ poster vào CSS.
 
-Showcase là màn hình riêng với dữ liệu tổng hợp, reset được và không phát lệnh thật tới Bravo/CA. Có thể dùng ba câu chuyện 3-way matching, graph tham chiếu và mobile theo tài liệu thiết kế. Giao diện tác nghiệp dùng đầy đủ nhãn, thông tin và trạng thái; quy tắc 3–7 từ và thanh placeholder chỉ áp dụng cho bố cục trình diễn. Animation thành công trong tác nghiệp chỉ xuất hiện khi operation đạt trạng thái tương ứng.
+Ưu tiên review inbox, hồ sơ tổng hợp, đối soát và duyệt mobile trước khi code luồng. Các component phải hỗ trợ loading, empty, error, forbidden, stale, offline, pending nguồn và unknown, kèm hành động khôi phục đúng. Không hiển thị hàng/đếm/quan hệ ngoài quyền. Review desktop/mobile bằng nội dung tiếng Việt thực tế, focus/keyboard, contrast, reflow và safe-area.
 
-Mọi màn hình cần loading, empty, validation, forbidden, stale, network error và thao tác khôi phục phù hợp. Chuẩn lưu thời gian là UTC; timezone tác nghiệp và lịch đặt tài nguyên chốt với Vinafco, dự kiến Asia/Ho_Chi_Minh. Đây là cấu hình sản phẩm, độc lập timezone của người đang lập kế hoạch.
+Đã thêm feat-081 đến feat-086 cho điều hướng, bố cục trọng tâm, trạng thái dùng chung, responsive, review UI và hình/demo Stageshow. Hình giới thiệu dùng dữ liệu tổng hợp và UI đã review, không thay kiểm thử nghiệp vụ hoặc tự gọi adapter thật. Chuẩn thời gian lưu là UTC; timezone tác nghiệp chốt với Vinafco, dự kiến Asia/Ho_Chi_Minh.
 
 ## 8 Thứ tự coding và ước lượng
 
 | Giai đoạn | Feature | Số việc | Ngày công dự kiến | Đầu ra |
 | --- | --- | --- | --- | --- |
-| P0 | feat-001 đến feat-006 | 6 | 5,5–11 | Khởi tạo và harness |
-| P1 | feat-007 đến feat-018 | 12 | 20–35 | Tổ chức quyền và tài liệu nền |
+| P0 | feat-001 đến feat-006, feat-081, feat-082 | 8 | 8,5–17 | Khởi tạo harness và thiết kế UI |
+| P1 | feat-007 đến feat-018, feat-083 | 13 | 21–37 | Tổ chức quyền và tài liệu nền |
 | P2 | feat-019 đến feat-034 | 16 | 31–57 | Biểu mẫu quy trình và pilot |
 | P3 | feat-035 đến feat-049 | 15 | 32–61 | Tài chính hợp đồng và Bravo |
 | P4 | feat-050 đến feat-059 | 10 | 20–37,5 | Kho dữ liệu và kiểm toán |
-| P5 | feat-060 đến feat-066 | 7 | 13–26 | Mobile native |
+| P5 | feat-060 đến feat-066, feat-084 | 8 | 14,5–29 | Mobile và responsive |
 | P6 | feat-067 đến feat-073 | 7 | 13,5–26 | Văn bản công việc và tiện ích |
-| P7 | feat-074 đến feat-080 | 7 | 16–30,5 | Tích hợp mở rộng và phát hành |
-| Tổng | feat-001 đến feat-080 | 80 | 151–284 | Toàn bộ phạm vi đề xuất |
+| P7 | feat-074 đến feat-080, feat-085, feat-086 | 9 | 19–36,5 | Review UI demo và phát hành |
+| Tổng | 86 feature giữ nguyên ID cũ và thêm feat-081 đến feat-086 | 86 | 159,5–301 | Toàn bộ phạm vi đề xuất |
 
 Ngày công là ước lượng kỹ thuật cho thực hiện và kiểm tra trong feature, không phải thời gian chạy của AI hay báo giá. Khoảng ước lượng còn phụ thuộc dữ liệu mẫu, số loại quy trình, API, chính sách ký và số kênh nhận tài liệu. Feat-074 hiện là khoản dự trù cho một nguồn ngoài được chọn; thêm nguồn cần estimate riêng. Thời gian chờ nhà cung cấp chưa được tính.
 
-Với một luồng làm việc tuần tự và năng lực khoảng một ngày công mỗi ngày, tổng 151–284 ngày công tương đương khoảng 30–57 tuần làm việc trước thời gian chờ. Nên dự phòng thêm 15–25% cho các bất định tích hợp và dữ liệu sau khảo sát, không cộng lại thời gian kiểm thử đã có trong feature. Không lấy số người chia trực tiếp vì Harness đang quy định một feature đang làm tại một thời điểm.
+Với một luồng làm việc tuần tự và năng lực khoảng một ngày công mỗi ngày, tổng 159,5–301 ngày công tương đương khoảng 32–61 tuần làm việc trước thời gian chờ. Nên dự phòng thêm 15–25% cho các bất định tích hợp và dữ liệu sau khảo sát, không cộng lại thời gian kiểm thử đã có trong feature. Không lấy số người chia trực tiếp vì Harness đang quy định một feature đang làm tại một thời điểm.
 
-Pilot P0–P2 không có ký số thật gồm 33 việc, 53,5–97 ngày công. Nếu hồ sơ pilot bắt buộc ký số thì thêm feat-032, thành 56,5–103 ngày công. Vì vậy mốc 2,5 tháng trong bản thiết kế chỉ nên đặt làm mục tiêu cho phạm vi pilot thu gọn sau QD-01; chưa đủ cơ sở cam kết cho toàn hệ thống. Đo lại ước lượng sau 3–5 feature hoàn tất, dựa trên thời gian thực và lỗi phát hiện.
+Pilot P0–P2 không có ký số thật gồm 36 việc, 57,5–105 ngày công. Nếu hồ sơ pilot bắt buộc ký số thì thêm feat-032, thành 60,5–111 ngày công. Vì vậy mốc 2,5 tháng trong bản thiết kế chỉ nên đặt làm mục tiêu cho phạm vi pilot thu gọn sau QD-01; chưa đủ cơ sở cam kết cho toàn hệ thống. Đo lại ước lượng sau 3–5 feature hoàn tất, dựa trên thời gian thực và lỗi phát hiện.
 
 Ưu tiên trong khoảng 10 ngày công đầu: hoàn thành P0 ở mức có thể kiểm chứng, chốt các đầu vào còn thiếu và bắt đầu nền tổ chức nếu có năng lực còn lại. Không cam kết xong một module nghiệp vụ chỉ dựa vào số phiên chat.
 
 ### Backlog có thể giao trực tiếp
 
-- [Chi tiết 80 công việc và ma trận truy vết](./BACKLOG_VI.md).
+- [Chi tiết 86 công việc và ma trận truy vết](./BACKLOG_VI.md).
 - [Feature list đề xuất cho coding agent](./feature_list.proposed.json).
 - [Schema đề xuất](./feature_list.schema.proposed.json).
 
@@ -386,6 +378,6 @@ Ghi mỗi quyết định với chủ xác nhận, ngày hiệu lực, phiên b�
 
 ## 13 Kiểm tra bộ kế hoạch
 
-Bộ kế hoạch được kiểm tra tính nhất quán về JSON/schema, 80 ID duy nhất, dependency tồn tại/không vòng, tất cả feature liên thông tới nghiệm thu cuối và phủ đúng 54 mã SRS. Sáu UAT và bảy QD đều có truy vết. Các status là not-started, evidence/commit trống; verification là kế hoạch chưa thực thi.
+Bộ kế hoạch được kiểm tra tính nhất quán về JSON/schema, 86 ID duy nhất, dependency tồn tại/không vòng, tất cả feature liên thông tới nghiệm thu cuối và phủ đúng 54 mã SRS. Sáu UAT và bảy QD đều có truy vết. Các status là not-started, evidence/commit trống; verification là kế hoạch chưa thực thi.
 
 Bước triển khai đầu tiên sau khi chốt hướng là feat-001 và feat-002: thống nhất phạm vi pilot, hoàn thiện đầu vào khảo sát và kiểm chứng stack. Sau đó mới đưa harness đã sửa cùng backlog được duyệt vào root để coding agent bắt đầu thực hiện.

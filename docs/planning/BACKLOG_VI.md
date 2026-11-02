@@ -1,26 +1,26 @@
 # Backlog coding E Office Vinafco
 
-Ngày 02/11/2026. Có 80 công việc đề xuất; toàn bộ chưa bắt đầu. Dùng cùng [kế hoạch tổng thể](./IMPLEMENTATION_PLAN_VI.md) và [feature list JSON](./feature_list.proposed.json).
+Cập nhật UI ngày 02/11/2026. Có 86 công việc đề xuất, toàn bộ chưa bắt đầu. Giữ ID feat-001 đến feat-080; bổ sung feat-081 đến feat-086 và xếp chúng theo dependency/phase.
 
-Đường dẫn code và lệnh xác minh là dự kiến, sẽ được tạo khi triển khai. Evidence và commit hiện để trống. Mỗi tiêu chí cần kiểm thử/kiểm tra nội dung thật, không chỉ đối chiếu tên file. Ngày công gồm thực hiện và kiểm tra trong feature, chưa gồm chờ nhà cung cấp.
+Dùng [kế hoạch tổng thể](./IMPLEMENTATION_PLAN_VI.md), [đặc tả UI thay thế](../design/thiet_ke_san_pham_eoffice_vinafco.md) và [JSON](./feature_list.proposed.json). UI-* trỏ tới mục tương ứng trong UI spec; BRAND-MOODBOARD là PDF nguồn, STAGESHOW là skill gốc. Thiết kế cũ không còn làm nguồn.
 
-HARNESS trỏ tới Harness Template; DESIGN-02/03/04-1/04-2/04-3 trỏ tới mục tương ứng của tài liệu thiết kế; các mã còn lại giữ theo SRS v2.0. QD liệt kê điều kiện cần chốt cho phần sử dụng thật của feature.
+Đường dẫn và lệnh kiểm tra là dự kiến. Evidence/commit để trống; ngày công chưa gồm chờ nhà cung cấp. Cần review trực quan thực tế để nghiệm thu UI.
 
 ## Danh mục theo giai đoạn
 
 | Giai đoạn | Feature | Số việc | Ngày công dự kiến | Đầu ra |
 | --- | --- | --- | --- | --- |
-| P0 | feat-001 đến feat-006 | 6 | 5,5–11 | Khởi tạo và harness |
-| P1 | feat-007 đến feat-018 | 12 | 20–35 | Tổ chức quyền và tài liệu nền |
+| P0 | feat-001 đến feat-006, feat-081, feat-082 | 8 | 8,5–17 | Khởi tạo harness và thiết kế UI |
+| P1 | feat-007 đến feat-018, feat-083 | 13 | 21–37 | Tổ chức quyền và tài liệu nền |
 | P2 | feat-019 đến feat-034 | 16 | 31–57 | Biểu mẫu quy trình và pilot |
 | P3 | feat-035 đến feat-049 | 15 | 32–61 | Tài chính hợp đồng và Bravo |
 | P4 | feat-050 đến feat-059 | 10 | 20–37,5 | Kho dữ liệu và kiểm toán |
-| P5 | feat-060 đến feat-066 | 7 | 13–26 | Mobile native |
+| P5 | feat-060 đến feat-066, feat-084 | 8 | 14,5–29 | Mobile và responsive |
 | P6 | feat-067 đến feat-073 | 7 | 13,5–26 | Văn bản công việc và tiện ích |
-| P7 | feat-074 đến feat-080 | 7 | 16–30,5 | Tích hợp mở rộng và phát hành |
-| Tổng | feat-001 đến feat-080 | 80 | 151–284 | Toàn bộ phạm vi đề xuất |
+| P7 | feat-074 đến feat-080, feat-085, feat-086 | 9 | 19–36,5 | Review UI demo và phát hành |
+| Tổng | 86 feature giữ nguyên ID cũ và thêm feat-081 đến feat-086 | 86 | 159,5–301 | Toàn bộ phạm vi đề xuất |
 
-## P0 Khởi tạo và harness
+## P0 Khởi tạo harness và thiết kế UI
 
 ### feat-001 Chốt phạm vi và sổ quyết định
 
@@ -114,21 +114,57 @@ Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 
 
 ### feat-006 Design tokens và khung ứng dụng
 
-Xây token màu, typography, spacing và thư viện thành phần dùng chung; tạo sidebar, header, bộ chọn vai trò/pháp nhân và bố cục responsive.
+Xây token và AppShell theo docs/design/thiet_ke_san_pham_eoffice_vinafco.md: nền sáng, navigation biển sâu, accent sản phẩm teal đề xuất; typography và nhịp spacing từ moodboard. Không đưa địa hình/mặt cắt của công ty mẹ vào UI sản phẩm.
 
-- Phụ thuộc: feat-003, feat-005.
-- Nguồn: DESIGN-02, DESIGN-03.
+- Phụ thuộc: feat-003, feat-005, feat-081.
+- Nguồn: BRAND-MOODBOARD, UI-TOKENS, STAGESHOW, UI-SHELL.
 - Điều kiện xác nhận: Không có QD chặn riêng.
-- Vùng code dự kiến: `packages/ui/`, `packages/design-tokens/`, `apps/web/src/app/`.
+- Vùng code dự kiến: `packages/ui/`, `packages/design-tokens/`, `apps/web/src/app/`, `docs/design/ui.tokens.json`.
 - Ước lượng: 1–2 ngày công.
 
 Tiêu chí nghiệm thu:
 
-1. Màu và font bám thiết kế; bảng, form, dialog, trạng thái trống/lỗi/loading dùng chung component.
-2. Bàn phím, focus, tương phản và layout điện thoại được kiểm tra; dữ liệu nghiệp vụ có nhãn đầy đủ.
+1. Tokens phân biệt màu nguồn của công ty và accent sản phẩm đề xuất; component có chữ tiếng Việt, focus, khoảng cách và trạng thái tương tác rõ ràng.
+2. Shell desktop/mobile có bộ chọn vai trò/pháp nhân luôn nhận biết được; tài liệu vẫn đọc trên nền trắng, không thu nhỏ cả desktop xuống điện thoại.
 
 Kiểm tra dự kiến: `pnpm verify:feature --id feat-006`.
 Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy.
+
+### feat-081 Sitemap và luồng UI theo vai trò
+
+Thiết kế điều hướng, context và luồng inbox → bản trình → quyết định cho người lập, người duyệt, kế toán và quản trị.
+
+- Phụ thuộc: feat-002, feat-005.
+- Nguồn: UI-SHELL, WF-04, MOB-02.
+- Điều kiện xác nhận: QD-01, QD-02.
+- Vùng code dự kiến: `docs/design/flows/`.
+- Ước lượng: 1–2 ngày công.
+
+Tiêu chí nghiệm thu:
+
+1. Sitemap và user flow ghi rõ đích đến, đường quay lại, scope vai trò/pháp nhân và hành động chính.
+2. Review luồng bằng các tình huống SRS; menu ngoài quyền không xuất hiện và context luôn thấy trước quyết định.
+
+Kiểm tra dự kiến: `pnpm verify:feature --id feat-081`.
+Lệnh tự động kiểm phần có thể kiểm; UI review cần ảnh và biên bản quan sát thật, không coi build pass là UI đã đạt.
+
+### feat-082 Review bố cục bốn màn hình trọng tâm
+
+Dựng bản review dùng fixture cho inbox, hồ sơ tổng hợp, đối soát và chi tiết duyệt mobile; giữ context, căn cứ và action rõ ràng.
+
+- Phụ thuộc: feat-006, feat-081.
+- Nguồn: UI-INBOX, UI-DOSSIER, UI-MATCH, UI-MOBILE.
+- Điều kiện xác nhận: QD-01.
+- Vùng code dự kiến: `docs/design/reviews/`, `apps/web/src/features/ui-preview/`.
+- Ước lượng: 2–4 ngày công.
+
+Tiêu chí nghiệm thu:
+
+1. Có hình/bản xem ở 1440 và 390px với dữ liệu tiếng Việt thực tế, tên dài và số tiền lớn; dùng cùng tokens.
+2. Review đủ pending, thiếu dữ liệu, stale revision và thao tác mất mạng; người review xác nhận luồng trước triển khai inbox.
+
+Kiểm tra dự kiến: `pnpm verify:feature --id feat-082`.
+Lệnh tự động kiểm phần có thể kiểm; UI review cần ảnh và biên bản quan sát thật, không coi build pass là UI đã đạt.
 
 
 ## P1 Tổ chức quyền và tài liệu nền
@@ -349,6 +385,24 @@ Tiêu chí nghiệm thu:
 Kiểm tra dự kiến: `pnpm verify:feature --id feat-018`.
 Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy.
 
+### feat-083 Component UI và trạng thái dùng chung
+
+Hoàn thiện StatusBadge, DocumentViewer, DiffPanel, AsyncOperationStatus, FormField và ApprovalActionBar; quy định status, error, empty, loading và thông báo truy cập.
+
+- Phụ thuộc: feat-006, feat-005.
+- Nguồn: UI-STATES, AUTH-01, MOB-03.
+- Điều kiện xác nhận: Không có QD chặn riêng.
+- Vùng code dự kiến: `packages/ui/`, `apps/web/src/features/ui-preview/`, `docs/design/states/`.
+- Ước lượng: 1–2 ngày công.
+
+Tiêu chí nghiệm thu:
+
+1. Ma trận trạng thái trong UI spec có ví dụ, nhãn và hành động khôi phục; không coi chờ nguồn hoặc unknown là thành công.
+2. Field giữ dữ liệu khi lỗi; focus, keyboard và text status hoạt động; forbidden/search không lộ metadata đối tượng ngoài quyền.
+
+Kiểm tra dự kiến: `pnpm verify:feature --id feat-083`.
+Lệnh tự động kiểm phần có thể kiểm; UI review cần ảnh và biên bản quan sát thật, không coi build pass là UI đã đạt.
+
 
 ## P2 Biểu mẫu quy trình và pilot
 
@@ -356,7 +410,7 @@ Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 
 
 Render và validate biểu mẫu từ schema; hỗ trợ danh mục nguồn, điều kiện, công thức giới hạn và quyền từng bước. Tính toán lại ở máy chủ.
 
-- Phụ thuộc: feat-013, feat-016.
+- Phụ thuộc: feat-013, feat-016, feat-083.
 - Nguồn: WF-01, CFG-01.
 - Điều kiện xác nhận: QD-02.
 - Vùng code dự kiến: `apps/api/src/modules/forms/`, `apps/web/src/features/form-runtime/`.
@@ -482,7 +536,7 @@ Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 
 
 Xây inbox, chi tiết bản trình và API quyết định. Lưu snapshot, người thực hiện, thẩm quyền, ý kiến và operation ID trong transaction.
 
-- Phụ thuộc: feat-023, feat-024, feat-025, feat-018.
+- Phụ thuộc: feat-023, feat-024, feat-025, feat-018, feat-083, feat-082.
 - Nguồn: WF-04, AUTH-02, MOB-02.
 - Điều kiện xác nhận: QD-02.
 - Vùng code dự kiến: `apps/api/src/modules/approvals/`, `apps/web/src/features/approval-inbox/`.
@@ -684,7 +738,7 @@ Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 
 Giữ nguyên byte hóa đơn gốc; parser XML theo phiên bản mẫu được khảo sát, tắt thực thể ngoài và giới hạn tài nguyên. Tách parsing, kiểm tra toàn vẹn và xác minh chữ ký hóa đơn.
 
 - Phụ thuộc: feat-012, feat-016, feat-036.
-- Nguồn: FIN-02, FIN-03, DESIGN-04-1.
+- Nguồn: FIN-02, FIN-03, UI-MATCH, UI-EXTRACTION.
 - Điều kiện xác nhận: QD-02.
 - Vùng code dự kiến: `apps/api/src/modules/finance/invoices/`, `apps/worker/src/jobs/invoice-parsing/`.
 - Ước lượng: 2–4 ngày công.
@@ -755,8 +809,8 @@ Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 
 
 Đối chiếu các trường áp dụng giữa hợp đồng/đơn mua, nghiệm thu, hóa đơn và yêu cầu thanh toán; lưu căn cứ, ngưỡng và phiên bản rule.
 
-- Phụ thuộc: feat-035, feat-037, feat-040, feat-025.
-- Nguồn: FIN-04, DESIGN-04-1.
+- Phụ thuộc: feat-035, feat-037, feat-040, feat-025, feat-083.
+- Nguồn: FIN-04, UI-MATCH, UI-EXTRACTION.
 - Điều kiện xác nhận: QD-02.
 - Vùng code dự kiến: `apps/api/src/modules/finance/matching/`, `apps/web/src/features/matching/`.
 - Ước lượng: 3–5 ngày công.
@@ -938,8 +992,8 @@ Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 
 
 Trích xuất và lập chỉ mục nội dung với search port; bắt đầu bằng tìm metadata và full text phù hợp tải. Quyền áp dụng trước kết quả, snippet, facet và tổng số.
 
-- Phụ thuộc: feat-015, feat-038, feat-017.
-- Nguồn: DMS-05, AUTH-01, DESIGN-04-2.
+- Phụ thuộc: feat-015, feat-038, feat-017, feat-083.
+- Nguồn: DMS-05, AUTH-01, UI-DMS, UI-SEARCH.
 - Điều kiện xác nhận: QD-05, QD-06.
 - Vùng code dự kiến: `apps/api/src/modules/search/`, `apps/worker/src/jobs/indexing/`, `tests/security/search/`.
 - Ước lượng: 2–4 ngày công.
@@ -957,7 +1011,7 @@ Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 
 Hiển thị hợp đồng, tài liệu, hồ sơ và nguồn liên quan bằng danh sách hoặc đồ thị; tải từng phần và lọc node/edge theo quyền.
 
 - Phụ thuộc: feat-014, feat-024, feat-051.
-- Nguồn: DMS-01, DOS-01, DESIGN-04-2.
+- Nguồn: DMS-01, DOS-01, UI-DMS, UI-SEARCH.
 - Điều kiện xác nhận: QD-05.
 - Vùng code dự kiến: `apps/api/src/modules/document-relations/`, `apps/web/src/features/reference-graph/`.
 - Ước lượng: 1,5–3 ngày công.
@@ -993,7 +1047,7 @@ Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 
 Cấu hình retention theo loại, giữ để kiểm tra/tranh chấp, đề nghị tiêu hủy và phê duyệt. Thử Object Lock theo version nếu hạ tầng/chính sách yêu cầu WORM.
 
 - Phụ thuộc: feat-014, feat-011, feat-033.
-- Nguồn: DMS-07, NFR-05, DESIGN-04-2.
+- Nguồn: DMS-07, NFR-05, UI-DMS, UI-SEARCH.
 - Điều kiện xác nhận: QD-05, QD-06.
 - Vùng code dự kiến: `apps/api/src/modules/retention/`, `infra/storage/`, `docs/runbooks/retention/`.
 - Ước lượng: 2–4 ngày công.
@@ -1097,14 +1151,14 @@ Kiểm tra dự kiến: `pnpm verify:feature --id feat-059`.
 Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy.
 
 
-## P5 Mobile native
+## P5 Mobile và responsive
 
 ### feat-060 Ứng dụng Flutter và nền định danh
 
-Tạo app iOS/Android, token giao diện tương đương web, API client sinh từ OpenAPI, secure session và cơ chế build theo môi trường.
+Tạo app iOS/Android, ánh xạ UI tokens đã review từ docs/design vào Flutter, API client sinh từ OpenAPI, secure session và build theo môi trường. Framework là đề xuất kỹ thuật tại QD-04, không suy từ thiết kế cũ.
 
 - Phụ thuộc: feat-008, feat-026, feat-006.
-- Nguồn: MOB-01, MOB-05, DESIGN-04-3.
+- Nguồn: MOB-01, MOB-05, UI-MOBILE.
 - Điều kiện xác nhận: QD-01, QD-04, QD-06.
 - Vùng code dự kiến: `apps/mobile/`, `packages/api-contracts/`, `docs/mobile/`.
 - Ước lượng: 2–4 ngày công.
@@ -1139,7 +1193,7 @@ Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 
 
 Chi tiết hồ sơ, viewer, cảnh báo, ý kiến và diff; gửi quyết định với snapshot ID, expected revision và operation ID.
 
-- Phụ thuộc: feat-061, feat-027, feat-044.
+- Phụ thuộc: feat-061, feat-027, feat-044, feat-083.
 - Nguồn: MOB-02, MOB-04.
 - Điều kiện xác nhận: QD-02.
 - Vùng code dự kiến: `apps/mobile/lib/features/approvals/`, `apps/mobile/lib/features/documents/`.
@@ -1176,7 +1230,7 @@ Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 
 Tích hợp UX ký của CA/HSM được chọn, step-up theo chính sách và theo dõi operation; hiển thị artifact/kết quả xác minh sau khi nguồn xác nhận.
 
 - Phụ thuộc: feat-032, feat-062, feat-063.
-- Nguồn: SIG-02, MOB-02, DESIGN-04-3.
+- Nguồn: SIG-02, MOB-02, UI-MOBILE.
 - Điều kiện xác nhận: QD-02, QD-04.
 - Vùng code dự kiến: `apps/mobile/lib/features/signing/`, `docs/mobile/signing/`.
 - Ước lượng: 2–4 ngày công.
@@ -1224,6 +1278,24 @@ Tiêu chí nghiệm thu:
 
 Kiểm tra dự kiến: `pnpm verify:feature --id feat-066`.
 Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy.
+
+### feat-084 Hoàn thiện responsive và thao tác mobile
+
+Điều chỉnh luồng duyệt, tài liệu, đối soát theo viewport; kiểm safe-area, bàn phím, tên dài, số tiền, offline và pending.
+
+- Phụ thuộc: feat-030, feat-062, feat-063, feat-083.
+- Nguồn: UI-MOBILE, MOB-02, MOB-03, MOB-05.
+- Điều kiện xác nhận: QD-04.
+- Vùng code dự kiến: `apps/web/src/features/`, `apps/mobile/lib/`, `docs/design/reviews/`.
+- Ước lượng: 1,5–3 ngày công.
+
+Tiêu chí nghiệm thu:
+
+1. Review ở 1440/1280/768/390px, reflow 320px và zoom 200%; không che action hoặc cắt mất đơn vị/số tiền.
+2. Mobile dùng bố cục riêng, field có label, vùng chạm rõ; kết quả chỉ confirmed khi nguồn xác nhận và có reduced motion.
+
+Kiểm tra dự kiến: `pnpm verify:feature --id feat-084`.
+Lệnh tự động kiểm phần có thể kiểm; UI review cần ảnh và biên bản quan sát thật, không coi build pass là UI đã đạt.
 
 
 ## P6 Văn bản công việc và tiện ích
@@ -1355,7 +1427,7 @@ Kiểm tra dự kiến: `pnpm verify:feature --id feat-073`.
 Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy.
 
 
-## P7 Tích hợp mở rộng và phát hành
+## P7 Review UI demo và phát hành
 
 ### feat-074 Quyết định hai chiều với nguồn ngoài được chọn
 
@@ -1469,7 +1541,7 @@ Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 
 
 Đối chiếu toàn bộ 54 yêu cầu, sáu UAT và các QD thành baseline; bàn giao hướng dẫn, đào tạo, cấu hình, quyền quản trị, export, hỗ trợ và lịch kiểm tra vận hành.
 
-- Phụ thuộc: feat-079, feat-076, feat-077, feat-078, feat-059, feat-066, feat-073, feat-074, feat-049, feat-034.
+- Phụ thuộc: feat-079, feat-076, feat-077, feat-078, feat-059, feat-066, feat-073, feat-074, feat-049, feat-034, feat-085, feat-086.
 - Nguồn: UAT-01, UAT-02, UAT-03, UAT-04, UAT-05, UAT-06, NFR-01, NFR-02, NFR-03, NFR-04, NFR-05.
 - Điều kiện xác nhận: QD-01, QD-02, QD-03, QD-04, QD-05, QD-06, QD-07.
 - Vùng code dự kiến: `docs/uat/`, `docs/training/`, `docs/operations/`, `README.md`.
@@ -1483,21 +1555,57 @@ Tiêu chí nghiệm thu:
 Kiểm tra dự kiến: `pnpm verify:feature --id feat-080`.
 Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy.
 
+### feat-085 Review giao diện và khả năng truy cập
+
+Review toàn bộ màn hình triển khai so với UI spec; sửa sai lệch hierarchy, spacing, component, focus, tương phản và trạng thái.
+
+- Phụ thuộc: feat-082, feat-083, feat-084, feat-073, feat-049, feat-059, feat-066.
+- Nguồn: UI-REVIEW, AUTH-01, MOB-02.
+- Điều kiện xác nhận: QD-01.
+- Vùng code dự kiến: `docs/design/reviews/`, `packages/ui/`, `apps/web/`, `apps/mobile/`.
+- Ước lượng: 1–2 ngày công.
+
+Tiêu chí nghiệm thu:
+
+1. Có bảng review và ảnh màn hình thật cho các luồng ưu tiên, kiểm bàn phím/focus/contrast/reflow và ghi rõ phần chưa kiểm.
+2. CTA, bảng số, viewer, trạng thái bất đồng bộ và ngôn ngữ nhất quán; lỗi cản trở quyết định được sửa trước nghiệm thu cuối.
+
+Kiểm tra dự kiến: `pnpm verify:feature --id feat-085`.
+Lệnh tự động kiểm phần có thể kiểm; UI review cần ảnh và biên bản quan sát thật, không coi build pass là UI đã đạt.
+
+### feat-086 Hình và demo Stageshow theo UI đã review
+
+Dựng hình hoặc demo ngắn từ UI thật đã review và dữ liệu tổng hợp; chọn câu chuyện một hành động, có kết quả rõ và phiên bản compact.
+
+- Phụ thuộc: feat-085.
+- Nguồn: STAGESHOW, UI-SHOWCASE.
+- Điều kiện xác nhận: Không có QD chặn riêng.
+- Vùng code dự kiến: `docs/design/showcase/`, `apps/web/src/showcase/`.
+- Ước lượng: 2–4 ngày công.
+
+Tiêu chí nghiệm thu:
+
+1. Đọc skill gốc và references cần thiết, chọn example gần nhất; still/compact có crop hợp lý, CTA và dữ liệu trọng tâm còn nguyên.
+2. Nếu làm animation có poster reduced-motion và contact sheet/loop review; giữ kết quả đọc được, dữ liệu có nhãn, adapter giao dịch thật không được gọi.
+
+Kiểm tra dự kiến: `pnpm verify:feature --id feat-086`.
+Lệnh tự động kiểm phần có thể kiểm; UI review cần ảnh và biên bản quan sát thật, không coi build pass là UI đã đạt.
+
 ## Ma trận truy vết 54 yêu cầu SRS
 
-Mỗi hàng ghi các feature có liên quan; việc có tham chiếu không tự đồng nghĩa yêu cầu đã được nghiệm thu. Phần nghiệp vụ được mô tả rút gọn, tiêu chí gốc giữ trong SRS.
+Các hàng thể hiện phạm vi liên quan; tham chiếu không đồng nghĩa đã nghiệm thu.
 
 | Mã SRS | Hành vi chính | Feature liên quan |
 | --- | --- | --- |
 | ORG-01 | Hệ thống biểu diễn cây pháp nhân, Tổng công ty, đơn vị thành viên, chi nhánh, khối, phòng ban; lưu mã, quan hệ, ngày hiệu lực, trạng thái; hỗ trợ cá nhân kiêm… | feat-007 |
-| AUTH-01 | Quyền được quyết định bởi vai trò, pháp nhân, đơn vị, loại hồ sơ, mức bảo mật, hành động, hạn mức và hiệu lực; kiểm tra ở API, kết quả tìm kiếm, tệp và chức năng… | feat-005, feat-009, feat-015, feat-051, feat-057, feat-076 |
+| AUTH-01 | Quyền được quyết định bởi vai trò, pháp nhân, đơn vị, loại hồ sơ, mức bảo mật, hành động, hạn mức và hiệu lực; kiểm tra ở API, kết quả tìm kiếm, tệp và chức năng… | feat-005, feat-009, feat-015, feat-051, feat-057, feat-076, feat-083, feat-085 |
 | AUTH-02 | Ủy quyền ghi người giao, người nhận, căn cứ, phạm vi nghiệp vụ, hạn mức, ngày bắt đầu/kết thúc, trạng thái thu hồi và người đã quyết định thực tế; kiểm tra thẩm… | feat-010, feat-026, feat-076 |
 | CFG-01 | Quản trị viên nghiệp vụ cấu hình bảng quy tắc theo loại hồ sơ và pháp nhân: trường bắt buộc, tài liệu, ngưỡng tiền, người kiểm tra, ngoại lệ, chuỗi ký, thời hạn;… | feat-013, feat-019, feat-020, feat-021, feat-025 |
 | AUD-01 | Lưu lịch sử tạo, xem, tải, sửa, cấp/thu hồi quyền, trình, phê duyệt, ký, xuất, tích hợp và thay thế; ghi ai, lúc nào, phạm vi, đối tượng, kết quả và phiên bản;… | feat-011, feat-075 |
 | WF-01 | Thiết kế biểu mẫu theo loại việc với trường dữ liệu, điều kiện bắt buộc, tệp, công thức có phiên bản, nguồn danh mục và phân quyền xem/sửa từng bước. [YCG] | feat-019, feat-020, feat-025, feat-034 |
 | WF-02 | Quy trình hỗ trợ tuần tự, song song, điều kiện, trả lại, rút trình, thay người, nhắc hạn, quá hạn; xác định người xử lý theo cơ cấu và thẩm quyền đang hiệu lực.… | feat-018, feat-021, feat-022, feat-023, feat-028, feat-034 |
 | WF-03 | Cho phép quy trình mua sắm, hợp đồng, tạm ứng, quyết toán, thanh toán cùng tham chiếu một hồ sơ tổng hợp; định nghĩa điều kiện kích hoạt, dữ liệu kế thừa, trạng… | feat-029, feat-034 |
-| WF-04 | Người duyệt xem dữ liệu, chứng từ, phiên bản, ý kiến trước, cảnh báo và các bước còn lại; có duyệt, từ chối, trả bổ sung, cho ý kiến theo chính sách. [YCG] | feat-022, feat-026, feat-028, feat-034 |
+| WF-04 | Người duyệt xem dữ liệu, chứng từ, phiên bản, ý kiến trước, cảnh báo và các bước còn lại; có duyệt, từ chối, trả bổ sung, cho ý kiến theo chính sách. [YCG] | feat-022, feat-026, feat-028, feat-034, feat-081 |
 | WF-05 | Thay số tiền, đối tác, người thụ hưởng hoặc tài liệu trọng yếu sau khi trình khiến bước duyệt bị vô hiệu hóa hoặc trình lại theo quy tắc được cấu hình; so sánh… | feat-027, feat-034 |
 | DOS-01 | Mỗi hồ sơ có mã duy nhất, chủ sở hữu, pháp nhân, loại nghiệp vụ, kỳ, trạng thái và liên kết tới chứng từ từ nhiều đơn vị/hệ thống; cho phép tham chiếu một tài… | feat-014, feat-024, feat-052 |
 | DOS-02 | Khi hoàn tất, tạo danh mục chứng từ, phiên bản tại thời điểm chốt, lịch sử phê duyệt và trạng thái ký; cấp mã tra cứu cho người có quyền, kiểm soát phạm vi và… | feat-033, feat-047, feat-057 |
@@ -1528,10 +1636,10 @@ Mỗi hàng ghi các feature có liên quan; việc có tham chiếu không tự
 | PRJ-01 | Dự án quản lý thành phần, giai đoạn, mốc, công việc, người phụ trách, tiến độ thực tế và phần trăm theo cách tính được cấu hình; gắn tài liệu và quyết định. [YCG] | feat-071 |
 | UTL-01 | Đăng ký và duyệt xe, phòng họp, công tác theo lịch, nguồn lực, người quản lý và xung đột; công tác liên kết đề xuất, tạm ứng và quyết toán nếu áp dụng. [YCG, ĐX] | feat-072, feat-073 |
 | MOB-01 | iOS/Android hiển thị các yêu cầu E Office, lọc theo vai trò, pháp nhân, hạn, số tiền; yêu cầu từ hệ thống ngoài hiển thị mức kết nối và trạng thái xác nhận. [YCG] | feat-018, feat-030, feat-060, feat-061, feat-066, feat-074 |
-| MOB-02 | Hiển thị tóm tắt, số tiền, ngân sách nếu có dữ liệu, tài liệu, ý kiến trước, cảnh báo, bản được trình; cho duyệt, từ chối, trả lại, cho ý kiến và ký theo quyền.… | feat-026, feat-030, feat-044, feat-062, feat-064 |
-| MOB-03 | Một yêu cầu duyệt có định danh giao dịch để chống xử lý trùng; hiển thị chưa gửi, đang đồng bộ, nguồn đã xác nhận hoặc lỗi; có gửi lại an toàn và danh sách đối… | feat-030, feat-063 |
+| MOB-02 | Hiển thị tóm tắt, số tiền, ngân sách nếu có dữ liệu, tài liệu, ý kiến trước, cảnh báo, bản được trình; cho duyệt, từ chối, trả lại, cho ý kiến và ký theo quyền.… | feat-026, feat-030, feat-044, feat-062, feat-064, feat-081, feat-084, feat-085 |
+| MOB-03 | Một yêu cầu duyệt có định danh giao dịch để chống xử lý trùng; hiển thị chưa gửi, đang đồng bộ, nguồn đã xác nhận hoặc lỗi; có gửi lại an toàn và danh sách đối… | feat-030, feat-063, feat-083, feat-084 |
 | MOB-04 | Thay đổi dữ liệu trọng yếu vô hiệu hóa yêu cầu cũ theo chính sách; thông báo và yêu cầu xem phiên bản mới; lưu chuỗi phê duyệt trước và sau. [YCG] | feat-027, feat-062, feat-063 |
-| MOB-05 | Hỗ trợ xác thực theo phương án SSO/MFA được Vinafco chọn; thiết bị mất phải thu hồi phiên; ngoại tuyến chỉ xem dữ liệu cho phép với biện pháp bảo vệ và không… | feat-008, feat-030, feat-060, feat-063, feat-065, feat-066, feat-076 |
+| MOB-05 | Hỗ trợ xác thực theo phương án SSO/MFA được Vinafco chọn; thiết bị mất phải thu hồi phiên; ngoại tuyến chỉ xem dữ liệu cho phép với biện pháp bảo vệ và không… | feat-008, feat-030, feat-060, feat-063, feat-065, feat-066, feat-076, feat-084 |
 | SIG-01 | Phân loại xác nhận của người lập, ý kiến kiểm tra, phê duyệt nội bộ, ký điện tử và ký số của người có thẩm quyền/pháp nhân; gắn từng loại với bước, loại văn bản,… | feat-025, feat-031, feat-068 |
 | SIG-02 | Với văn bản ký số, lưu tài liệu đã ký, kết quả xác minh, thời điểm, chứng thư và quan hệ với người được ủy quyền; thay nội dung đã ký phải phát hành bản mới. Nhà… | feat-032, feat-064, feat-068 |
 | INT-01 | Mỗi kết nối có tài liệu hợp đồng dữ liệu: trường, kiểu, nguồn chuẩn, chiều đồng bộ, sự kiện, lịch, mã lỗi, xác thực, quyền, thời gian chờ, xử lý lặp và đối soát.… | feat-002, feat-017, feat-032, feat-040, feat-045, feat-074 |
@@ -1554,12 +1662,12 @@ Mỗi hàng ghi các feature có liên quan; việc có tham chiếu không tự
 | UAT-04 | feat-005, feat-034, feat-066, feat-080 |
 | UAT-05 | feat-005, feat-056, feat-059, feat-080 |
 | UAT-06 | feat-005, feat-073, feat-080 |
-| QD-01 | feat-001, feat-007, feat-024, feat-030, feat-034, feat-048, feat-050, feat-060, feat-067, feat-069, feat-079, feat-080 |
-| QD-02 | feat-001, feat-009, feat-010, feat-013, feat-019, feat-020, feat-021, feat-022, feat-023, feat-024, feat-025, feat-026, feat-027, feat-028, feat-029, feat-031, feat-032, feat-033, feat-034, feat-035, feat-036, feat-037, feat-038, feat-039, feat-040, feat-041, feat-042, feat-043, feat-044, feat-048, feat-049, feat-053, feat-062, feat-063, feat-064, feat-067, feat-068, feat-073, feat-080 |
+| QD-01 | feat-001, feat-007, feat-024, feat-030, feat-034, feat-048, feat-050, feat-060, feat-067, feat-069, feat-079, feat-080, feat-081, feat-082, feat-085 |
+| QD-02 | feat-001, feat-009, feat-010, feat-013, feat-019, feat-020, feat-021, feat-022, feat-023, feat-024, feat-025, feat-026, feat-027, feat-028, feat-029, feat-031, feat-032, feat-033, feat-034, feat-035, feat-036, feat-037, feat-038, feat-039, feat-040, feat-041, feat-042, feat-043, feat-044, feat-048, feat-049, feat-053, feat-062, feat-063, feat-064, feat-067, feat-068, feat-073, feat-080, feat-081 |
 | QD-03 | feat-001, feat-002, feat-016, feat-036, feat-042, feat-044, feat-045, feat-046, feat-048, feat-049, feat-079, feat-080 |
-| QD-04 | feat-001, feat-002, feat-008, feat-016, feat-018, feat-031, feat-032, feat-035, feat-040, feat-048, feat-050, feat-060, feat-061, feat-063, feat-064, feat-066, feat-068, feat-074, feat-079, feat-080 |
+| QD-04 | feat-001, feat-002, feat-008, feat-016, feat-018, feat-031, feat-032, feat-035, feat-040, feat-048, feat-050, feat-060, feat-061, feat-063, feat-064, feat-066, feat-068, feat-074, feat-079, feat-080, feat-084 |
 | QD-05 | feat-001, feat-009, feat-011, feat-012, feat-013, feat-014, feat-015, feat-033, feat-039, feat-047, feat-050, feat-051, feat-052, feat-053, feat-054, feat-055, feat-056, feat-057, feat-058, feat-059, feat-065, feat-066, feat-076, feat-078, feat-079, feat-080 |
 | QD-06 | feat-001, feat-002, feat-008, feat-012, feat-038, feat-051, feat-054, feat-055, feat-056, feat-058, feat-059, feat-060, feat-065, feat-066, feat-075, feat-076, feat-077, feat-078, feat-079, feat-080 |
 | QD-07 | feat-001, feat-069, feat-070, feat-071, feat-072, feat-073, feat-080 |
 
-Việc nghiệm thu cuối feat-080 phụ thuộc trực tiếp hoặc gián tiếp vào toàn bộ 79 việc trước đó. Nếu cắt phạm vi, cập nhật baseline và đồ thị này trước khi thực hiện; không đánh dấu done cho việc bị loại.
+Nghiệm thu cuối vẫn là feat-080 và phụ thuộc trực tiếp/gián tiếp vào toàn bộ 85 việc còn lại, gồm các việc UI bổ sung. Khi cắt phạm vi phải cập nhật baseline và dependency thay vì đánh dấu done giả.

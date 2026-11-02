@@ -223,21 +223,25 @@
       "name": "Design tokens và khung ứng dụng",
       "dependencies": [
         "feat-003",
-        "feat-005"
+        "feat-005",
+        "feat-081"
       ],
       "source_refs": [
-        "DESIGN-02",
-        "DESIGN-03"
+        "BRAND-MOODBOARD",
+        "UI-TOKENS",
+        "STAGESHOW",
+        "UI-SHELL"
       ],
-      "description": "Xây token màu, typography, spacing và thư viện thành phần dùng chung; tạo sidebar, header, bộ chọn vai trò/pháp nhân và bố cục responsive.",
+      "description": "Xây token và AppShell theo docs/design/thiet_ke_san_pham_eoffice_vinafco.md: nền sáng, navigation biển sâu, accent sản phẩm teal đề xuất; typography và nhịp spacing từ moodboard. Không đưa địa hình/mặt cắt của công ty mẹ vào UI sản phẩm.",
       "planned_paths": [
         "packages/ui/",
         "packages/design-tokens/",
-        "apps/web/src/app/"
+        "apps/web/src/app/",
+        "docs/design/ui.tokens.json"
       ],
       "acceptance_criteria": [
-        "Màu và font bám thiết kế; bảng, form, dialog, trạng thái trống/lỗi/loading dùng chung component.",
-        "Bàn phím, focus, tương phản và layout điện thoại được kiểm tra; dữ liệu nghiệp vụ có nhãn đầy đủ."
+        "Tokens phân biệt màu nguồn của công ty và accent sản phẩm đề xuất; component có chữ tiếng Việt, focus, khoảng cách và trạng thái tương tác rõ ràng.",
+        "Shell desktop/mobile có bộ chọn vai trò/pháp nhân luôn nhận biết được; tài liệu vẫn đọc trên nền trắng, không thu nhỏ cả desktop xuống điện thoại."
       ],
       "estimate_days": [
         1,
@@ -251,8 +255,8 @@
         "kind": "planned",
         "command": "pnpm verify:feature --id feat-006",
         "assertions": [
-          "Màu và font bám thiết kế; bảng, form, dialog, trạng thái trống/lỗi/loading dùng chung component.",
-          "Bàn phím, focus, tương phản và layout điện thoại được kiểm tra; dữ liệu nghiệp vụ có nhãn đầy đủ."
+          "Tokens phân biệt màu nguồn của công ty và accent sản phẩm đề xuất; component có chữ tiếng Việt, focus, khoảng cách và trạng thái tương tác rõ ràng.",
+          "Shell desktop/mobile có bộ chọn vai trò/pháp nhân luôn nhận biết được; tài liệu vẫn đọc trên nền trắng, không thu nhỏ cả desktop xuống điện thoại."
         ],
         "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
       }
@@ -761,7 +765,8 @@
       "name": "Runtime biểu mẫu có phiên bản",
       "dependencies": [
         "feat-013",
-        "feat-016"
+        "feat-016",
+        "feat-083"
       ],
       "source_refs": [
         "WF-01",
@@ -1051,7 +1056,9 @@
         "feat-023",
         "feat-024",
         "feat-025",
-        "feat-018"
+        "feat-018",
+        "feat-083",
+        "feat-082"
       ],
       "source_refs": [
         "WF-04",
@@ -1532,7 +1539,8 @@
       "source_refs": [
         "FIN-02",
         "FIN-03",
-        "DESIGN-04-1"
+        "UI-MATCH",
+        "UI-EXTRACTION"
       ],
       "description": "Giữ nguyên byte hóa đơn gốc; parser XML theo phiên bản mẫu được khảo sát, tắt thực thể ngoài và giới hạn tài nguyên. Tách parsing, kiểm tra toàn vẹn và xác minh chữ ký hóa đơn.",
       "planned_paths": [
@@ -1698,11 +1706,13 @@
         "feat-035",
         "feat-037",
         "feat-040",
-        "feat-025"
+        "feat-025",
+        "feat-083"
       ],
       "source_refs": [
         "FIN-04",
-        "DESIGN-04-1"
+        "UI-MATCH",
+        "UI-EXTRACTION"
       ],
       "description": "Đối chiếu các trường áp dụng giữa hợp đồng/đơn mua, nghiệm thu, hóa đơn và yêu cầu thanh toán; lưu căn cứ, ngưỡng và phiên bản rule.",
       "planned_paths": [
@@ -2128,12 +2138,14 @@
       "dependencies": [
         "feat-015",
         "feat-038",
-        "feat-017"
+        "feat-017",
+        "feat-083"
       ],
       "source_refs": [
         "DMS-05",
         "AUTH-01",
-        "DESIGN-04-2"
+        "UI-DMS",
+        "UI-SEARCH"
       ],
       "description": "Trích xuất và lập chỉ mục nội dung với search port; bắt đầu bằng tìm metadata và full text phù hợp tải. Quyền áp dụng trước kết quả, snippet, facet và tổng số.",
       "planned_paths": [
@@ -2178,7 +2190,8 @@
       "source_refs": [
         "DMS-01",
         "DOS-01",
-        "DESIGN-04-2"
+        "UI-DMS",
+        "UI-SEARCH"
       ],
       "description": "Hiển thị hợp đồng, tài liệu, hồ sơ và nguồn liên quan bằng danh sách hoặc đồ thị; tải từng phần và lọc node/edge theo quyền.",
       "planned_paths": [
@@ -2265,7 +2278,8 @@
       "source_refs": [
         "DMS-07",
         "NFR-05",
-        "DESIGN-04-2"
+        "UI-DMS",
+        "UI-SEARCH"
       ],
       "description": "Cấu hình retention theo loại, giữ để kiểm tra/tranh chấp, đề nghị tiêu hủy và phê duyệt. Thử Object Lock theo version nếu hạ tầng/chính sách yêu cầu WORM.",
       "planned_paths": [
@@ -2528,9 +2542,9 @@
       "source_refs": [
         "MOB-01",
         "MOB-05",
-        "DESIGN-04-3"
+        "UI-MOBILE"
       ],
-      "description": "Tạo app iOS/Android, token giao diện tương đương web, API client sinh từ OpenAPI, secure session và cơ chế build theo môi trường.",
+      "description": "Tạo app iOS/Android, ánh xạ UI tokens đã review từ docs/design vào Flutter, API client sinh từ OpenAPI, secure session và build theo môi trường. Framework là đề xuất kỹ thuật tại QD-04, không suy từ thiết kế cũ.",
       "planned_paths": [
         "apps/mobile/",
         "packages/api-contracts/",
@@ -2609,7 +2623,8 @@
       "dependencies": [
         "feat-061",
         "feat-027",
-        "feat-044"
+        "feat-044",
+        "feat-083"
       ],
       "source_refs": [
         "MOB-02",
@@ -2699,7 +2714,7 @@
       "source_refs": [
         "SIG-02",
         "MOB-02",
-        "DESIGN-04-3"
+        "UI-MOBILE"
       ],
       "description": "Tích hợp UX ký của CA/HSM được chọn, step-up theo chính sách và theo dõi operation; hiển thị artifact/kết quả xác minh sau khi nguồn xác nhận.",
       "planned_paths": [
@@ -3409,7 +3424,9 @@
         "feat-073",
         "feat-074",
         "feat-049",
-        "feat-034"
+        "feat-034",
+        "feat-085",
+        "feat-086"
       ],
       "source_refs": [
         "UAT-01",
@@ -3459,6 +3476,265 @@
           "Chủ vận hành tiếp nhận và thực hành được backup/restore, xử lý lỗi tích hợp, thu hồi quyền và xuất bộ dữ liệu; go-live theo quyết định phát hành riêng."
         ],
         "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-081",
+      "phase": "P0",
+      "name": "Sitemap và luồng UI theo vai trò",
+      "dependencies": [
+        "feat-002",
+        "feat-005"
+      ],
+      "source_refs": [
+        "UI-SHELL",
+        "WF-04",
+        "MOB-02"
+      ],
+      "description": "Thiết kế điều hướng, context và luồng inbox → bản trình → quyết định cho người lập, người duyệt, kế toán và quản trị.",
+      "planned_paths": [
+        "docs/design/flows/"
+      ],
+      "acceptance_criteria": [
+        "Sitemap và user flow ghi rõ đích đến, đường quay lại, scope vai trò/pháp nhân và hành động chính.",
+        "Review luồng bằng các tình huống SRS; menu ngoài quyền không xuất hiện và context luôn thấy trước quyết định."
+      ],
+      "estimate_days": [
+        1,
+        2
+      ],
+      "decision_gates": [
+        "QD-01",
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-081",
+        "assertions": [
+          "Sitemap và user flow ghi rõ đích đến, đường quay lại, scope vai trò/pháp nhân và hành động chính.",
+          "Review luồng bằng các tình huống SRS; menu ngoài quyền không xuất hiện và context luôn thấy trước quyết định."
+        ],
+        "note": "Lệnh tự động kiểm phần có thể kiểm; UI review cần ảnh và biên bản quan sát thật, không coi build pass là UI đã đạt."
+      }
+    },
+    {
+      "id": "feat-082",
+      "phase": "P0",
+      "name": "Review bố cục bốn màn hình trọng tâm",
+      "dependencies": [
+        "feat-006",
+        "feat-081"
+      ],
+      "source_refs": [
+        "UI-INBOX",
+        "UI-DOSSIER",
+        "UI-MATCH",
+        "UI-MOBILE"
+      ],
+      "description": "Dựng bản review dùng fixture cho inbox, hồ sơ tổng hợp, đối soát và chi tiết duyệt mobile; giữ context, căn cứ và action rõ ràng.",
+      "planned_paths": [
+        "docs/design/reviews/",
+        "apps/web/src/features/ui-preview/"
+      ],
+      "acceptance_criteria": [
+        "Có hình/bản xem ở 1440 và 390px với dữ liệu tiếng Việt thực tế, tên dài và số tiền lớn; dùng cùng tokens.",
+        "Review đủ pending, thiếu dữ liệu, stale revision và thao tác mất mạng; người review xác nhận luồng trước triển khai inbox."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-01"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-082",
+        "assertions": [
+          "Có hình/bản xem ở 1440 và 390px với dữ liệu tiếng Việt thực tế, tên dài và số tiền lớn; dùng cùng tokens.",
+          "Review đủ pending, thiếu dữ liệu, stale revision và thao tác mất mạng; người review xác nhận luồng trước triển khai inbox."
+        ],
+        "note": "Lệnh tự động kiểm phần có thể kiểm; UI review cần ảnh và biên bản quan sát thật, không coi build pass là UI đã đạt."
+      }
+    },
+    {
+      "id": "feat-083",
+      "phase": "P1",
+      "name": "Component UI và trạng thái dùng chung",
+      "dependencies": [
+        "feat-006",
+        "feat-005"
+      ],
+      "source_refs": [
+        "UI-STATES",
+        "AUTH-01",
+        "MOB-03"
+      ],
+      "description": "Hoàn thiện StatusBadge, DocumentViewer, DiffPanel, AsyncOperationStatus, FormField và ApprovalActionBar; quy định status, error, empty, loading và thông báo truy cập.",
+      "planned_paths": [
+        "packages/ui/",
+        "apps/web/src/features/ui-preview/",
+        "docs/design/states/"
+      ],
+      "acceptance_criteria": [
+        "Ma trận trạng thái trong UI spec có ví dụ, nhãn và hành động khôi phục; không coi chờ nguồn hoặc unknown là thành công.",
+        "Field giữ dữ liệu khi lỗi; focus, keyboard và text status hoạt động; forbidden/search không lộ metadata đối tượng ngoài quyền."
+      ],
+      "estimate_days": [
+        1,
+        2
+      ],
+      "decision_gates": [],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-083",
+        "assertions": [
+          "Ma trận trạng thái trong UI spec có ví dụ, nhãn và hành động khôi phục; không coi chờ nguồn hoặc unknown là thành công.",
+          "Field giữ dữ liệu khi lỗi; focus, keyboard và text status hoạt động; forbidden/search không lộ metadata đối tượng ngoài quyền."
+        ],
+        "note": "Lệnh tự động kiểm phần có thể kiểm; UI review cần ảnh và biên bản quan sát thật, không coi build pass là UI đã đạt."
+      }
+    },
+    {
+      "id": "feat-084",
+      "phase": "P5",
+      "name": "Hoàn thiện responsive và thao tác mobile",
+      "dependencies": [
+        "feat-030",
+        "feat-062",
+        "feat-063",
+        "feat-083"
+      ],
+      "source_refs": [
+        "UI-MOBILE",
+        "MOB-02",
+        "MOB-03",
+        "MOB-05"
+      ],
+      "description": "Điều chỉnh luồng duyệt, tài liệu, đối soát theo viewport; kiểm safe-area, bàn phím, tên dài, số tiền, offline và pending.",
+      "planned_paths": [
+        "apps/web/src/features/",
+        "apps/mobile/lib/",
+        "docs/design/reviews/"
+      ],
+      "acceptance_criteria": [
+        "Review ở 1440/1280/768/390px, reflow 320px và zoom 200%; không che action hoặc cắt mất đơn vị/số tiền.",
+        "Mobile dùng bố cục riêng, field có label, vùng chạm rõ; kết quả chỉ confirmed khi nguồn xác nhận và có reduced motion."
+      ],
+      "estimate_days": [
+        1.5,
+        3
+      ],
+      "decision_gates": [
+        "QD-04"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-084",
+        "assertions": [
+          "Review ở 1440/1280/768/390px, reflow 320px và zoom 200%; không che action hoặc cắt mất đơn vị/số tiền.",
+          "Mobile dùng bố cục riêng, field có label, vùng chạm rõ; kết quả chỉ confirmed khi nguồn xác nhận và có reduced motion."
+        ],
+        "note": "Lệnh tự động kiểm phần có thể kiểm; UI review cần ảnh và biên bản quan sát thật, không coi build pass là UI đã đạt."
+      }
+    },
+    {
+      "id": "feat-085",
+      "phase": "P7",
+      "name": "Review giao diện và khả năng truy cập",
+      "dependencies": [
+        "feat-082",
+        "feat-083",
+        "feat-084",
+        "feat-073",
+        "feat-049",
+        "feat-059",
+        "feat-066"
+      ],
+      "source_refs": [
+        "UI-REVIEW",
+        "AUTH-01",
+        "MOB-02"
+      ],
+      "description": "Review toàn bộ màn hình triển khai so với UI spec; sửa sai lệch hierarchy, spacing, component, focus, tương phản và trạng thái.",
+      "planned_paths": [
+        "docs/design/reviews/",
+        "packages/ui/",
+        "apps/web/",
+        "apps/mobile/"
+      ],
+      "acceptance_criteria": [
+        "Có bảng review và ảnh màn hình thật cho các luồng ưu tiên, kiểm bàn phím/focus/contrast/reflow và ghi rõ phần chưa kiểm.",
+        "CTA, bảng số, viewer, trạng thái bất đồng bộ và ngôn ngữ nhất quán; lỗi cản trở quyết định được sửa trước nghiệm thu cuối."
+      ],
+      "estimate_days": [
+        1,
+        2
+      ],
+      "decision_gates": [
+        "QD-01"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-085",
+        "assertions": [
+          "Có bảng review và ảnh màn hình thật cho các luồng ưu tiên, kiểm bàn phím/focus/contrast/reflow và ghi rõ phần chưa kiểm.",
+          "CTA, bảng số, viewer, trạng thái bất đồng bộ và ngôn ngữ nhất quán; lỗi cản trở quyết định được sửa trước nghiệm thu cuối."
+        ],
+        "note": "Lệnh tự động kiểm phần có thể kiểm; UI review cần ảnh và biên bản quan sát thật, không coi build pass là UI đã đạt."
+      }
+    },
+    {
+      "id": "feat-086",
+      "phase": "P7",
+      "name": "Hình và demo Stageshow theo UI đã review",
+      "dependencies": [
+        "feat-085"
+      ],
+      "source_refs": [
+        "STAGESHOW",
+        "UI-SHOWCASE"
+      ],
+      "description": "Dựng hình hoặc demo ngắn từ UI thật đã review và dữ liệu tổng hợp; chọn câu chuyện một hành động, có kết quả rõ và phiên bản compact.",
+      "planned_paths": [
+        "docs/design/showcase/",
+        "apps/web/src/showcase/"
+      ],
+      "acceptance_criteria": [
+        "Đọc skill gốc và references cần thiết, chọn example gần nhất; still/compact có crop hợp lý, CTA và dữ liệu trọng tâm còn nguyên.",
+        "Nếu làm animation có poster reduced-motion và contact sheet/loop review; giữ kết quả đọc được, dữ liệu có nhãn, adapter giao dịch thật không được gọi."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-086",
+        "assertions": [
+          "Đọc skill gốc và references cần thiết, chọn example gần nhất; still/compact có crop hợp lý, CTA và dữ liệu trọng tâm còn nguyên.",
+          "Nếu làm animation có poster reduced-motion và contact sheet/loop review; giữ kết quả đọc được, dữ liệu có nhãn, adapter giao dịch thật không được gọi."
+        ],
+        "note": "Lệnh tự động kiểm phần có thể kiểm; UI review cần ảnh và biên bản quan sát thật, không coi build pass là UI đã đạt."
       }
     }
   ]

@@ -1,0 +1,64 @@
+{
+  "version": "2.0",
+  "status": "proposed",
+  "source": "thiet_ke_san_pham_eoffice_vinafco.md",
+  "product_accent_status": "proposed pending product brand review",
+  "colors": {
+    "canvas": "#F5F4EF",
+    "surface": "#FFFFFF",
+    "surfaceSubtle": "#F0F3F6",
+    "navigation": "#001A45",
+    "text": "#1B2233",
+    "textSecondary": "#526174",
+    "textOnDark": "#F5F4EF",
+    "border": "#D6DDE5",
+    "inputBorder": "#718096",
+    "productAccent": "#0F766E",
+    "productAccentHover": "#115E59",
+    "productAccentSoft": "#E6F4F1",
+    "productAccentOnDark": "#5EEAD4",
+    "successText": "#166534",
+    "successBg": "#DCFCE7",
+    "warningText": "#854D0E",
+    "warningBg": "#FEF3C7",
+    "dangerText": "#B91C1C",
+    "dangerBg": "#FEE2E2",
+    "infoText": "#1E40AF",
+    "infoBg": "#DBEAFE"
+  },
+  "fonts": {
+    "body": "Be Vietnam Pro",
+    "data": "IBM Plex Mono",
+    "quote": "Source Serif 4"
+  },
+  "spacing": [
+    4,
+    8,
+    12,
+    16,
+    24,
+    32,
+    48
+  ],
+  "radius": {
+    "control": 8,
+    "panel": 12
+  },
+  "sizes": {
+    "sidebar": 224,
+    "header": 64,
+    "desktopControl": 40,
+    "mobileTarget": 44
+  },
+  "breakpoints": {
+    "singleColumn": 1024,
+    "navigationDrawer": 768
+  },
+  "reviewWidths": [
+    1440,
+    1280,
+    768,
+    390,
+    320
+  ]
+}
