@@ -1,0 +1,3465 @@
+{
+  "version": "2.0.0",
+  "plan_date": "2026-11-02",
+  "baseline": "proposed",
+  "features": [
+    {
+      "id": "feat-001",
+      "phase": "P0",
+      "name": "Chốt phạm vi và sổ quyết định",
+      "dependencies": [],
+      "source_refs": [
+        "QD-01",
+        "QD-02",
+        "QD-03",
+        "QD-04",
+        "QD-05",
+        "QD-06",
+        "QD-07"
+      ],
+      "description": "Lập danh mục quy trình, pháp nhân pilot, chủ nghiệp vụ và sổ quyết định. Giữ riêng điều đã xác nhận, giả định và nội dung cần khảo sát.",
+      "planned_paths": [
+        "docs/requirements/",
+        "docs/decisions/",
+        "scripts/verify-decisions.ps1"
+      ],
+      "acceptance_criteria": [
+        "Mỗi QD có chủ xử lý, đầu vào, mốc cần chốt và phạm vi bị chặn.",
+        "Phạm vi pilot có danh sách chức năng và tiêu chí ra khỏi pilot; giả định không tự chuyển thành baseline."
+      ],
+      "estimate_days": [
+        0.5,
+        1
+      ],
+      "decision_gates": [],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "powershell -File ./scripts/verify-decisions.ps1",
+        "assertions": [
+          "Mỗi QD có chủ xử lý, đầu vào, mốc cần chốt và phạm vi bị chặn.",
+          "Phạm vi pilot có danh sách chức năng và tiêu chí ra khỏi pilot; giả định không tự chuyển thành baseline."
+        ],
+        "note": "Tạo cùng feature: kiểm đủ QD, owner, trạng thái, đầu vào và phạm vi pilot; kết hợp review nội dung của BA."
+      }
+    },
+    {
+      "id": "feat-002",
+      "phase": "P0",
+      "name": "Thử nghiệm kỹ thuật và hợp đồng kết nối",
+      "dependencies": [
+        "feat-001"
+      ],
+      "source_refs": [
+        "INT-01",
+        "INT-04",
+        "QD-03",
+        "QD-04",
+        "QD-06"
+      ],
+      "description": "Chọn phiên bản công cụ bằng thử nghiệm nhỏ; kiểm tra giao dịch DB, xác thực, upload và build. Lập inventory API Bravo, SSO, TMS/WMS, CA/HSM cùng phương án sandbox và dữ liệu mẫu.",
+      "planned_paths": [
+        "docs/architecture/",
+        "docs/integrations/",
+        "spikes/"
+      ],
+      "acceptance_criteria": [
+        "ADR ghi stack và phiên bản đã chạy thử, cách triển khai và các giới hạn đã biết.",
+        "Mỗi hệ thống ngoài có mức tích hợp, đầu mối và trạng thái khảo sát; thiếu API được ghi rõ, không coi mock là kết nối thành công."
+      ],
+      "estimate_days": [
+        1,
+        2
+      ],
+      "decision_gates": [],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "powershell -File ./spikes/verify-stack.ps1",
+        "assertions": [
+          "ADR ghi stack và phiên bản đã chạy thử, cách triển khai và các giới hạn đã biết.",
+          "Mỗi hệ thống ngoài có mức tích hợp, đầu mối và trạng thái khảo sát; thiếu API được ghi rõ, không coi mock là kết nối thành công."
+        ],
+        "note": "Tạo cùng spike; lưu kết quả thử stack và inventory kết nối, phân biệt verified với unavailable."
+      }
+    },
+    {
+      "id": "feat-003",
+      "phase": "P0",
+      "name": "Khởi tạo monorepo và môi trường phát triển",
+      "dependencies": [
+        "feat-002"
+      ],
+      "source_refs": [
+        "NFR-01",
+        "NFR-04"
+      ],
+      "description": "Tạo web, API, worker, thư viện hợp đồng API, migration DB và cấu hình môi trường. Dựng dịch vụ local bằng dữ liệu giả lập và khóa phiên bản dependency.",
+      "planned_paths": [
+        "apps/web/",
+        "apps/api/",
+        "apps/worker/",
+        "packages/",
+        "infra/",
+        "package.json"
+      ],
+      "acceptance_criteria": [
+        "Fresh checkout khởi động được theo README, health/readiness phản ánh đúng trạng thái DB và storage.",
+        "Có migration đầu tiên, seed riêng cho dev/test, mẫu biến môi trường không chứa bí mật và build tái lập."
+      ],
+      "estimate_days": [
+        1,
+        2
+      ],
+      "decision_gates": [],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:bootstrap",
+        "assertions": [
+          "Fresh checkout khởi động được theo README, health/readiness phản ánh đúng trạng thái DB và storage.",
+          "Có migration đầu tiên, seed riêng cho dev/test, mẫu biến môi trường không chứa bí mật và build tái lập."
+        ],
+        "note": "Tạo script này trong feat-003: build, khởi động local và smoke health bằng dữ liệu thử, trước khi chuẩn hóa runner ở feat-004."
+      }
+    },
+    {
+      "id": "feat-004",
+      "phase": "P0",
+      "name": "Chuẩn hóa harness và cổng xác minh",
+      "dependencies": [
+        "feat-003"
+      ],
+      "source_refs": [
+        "HARNESS"
+      ],
+      "description": "Đưa harness đã điều chỉnh vào dự án khi bắt đầu code; dùng duy nhất AGENTS.md và feature_list.json. Sửa bắt lỗi native command, kiểm tra bắt buộc và bộ kiểm tra đồ thị phụ thuộc.",
+      "planned_paths": [
+        "AGENTS.md",
+        "feature_list.json",
+        "feature_list.schema.json",
+        "init.ps1",
+        "init.sh",
+        "scripts/verify-harness/"
+      ],
+      "acceptance_criteria": [
+        "Lệnh giả lập exit 1 khiến cả runner PowerShell và Bash thất bại; thiếu manifest hoặc script bắt buộc không báo PASS.",
+        "Validator bắt ID trùng, dependency thiếu/vòng, nhiều feature đang làm và done thiếu evidence; progress ban đầu ghi NOT RUN."
+      ],
+      "estimate_days": [
+        1,
+        2
+      ],
+      "decision_gates": [],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "powershell -ExecutionPolicy Bypass -File ./init.ps1",
+        "assertions": [
+          "Lệnh giả lập exit 1 khiến cả runner PowerShell và Bash thất bại; thiếu manifest hoặc script bắt buộc không báo PASS.",
+          "Validator bắt ID trùng, dependency thiếu/vòng, nhiều feature đang làm và done thiếu evidence; progress ban đầu ghi NOT RUN."
+        ],
+        "note": "Dùng kiểm tra thật đã có từ feat-003; bổ sung kiểm runner thất bại đúng. Feat-005 mở rộng nền kiểm thử và dispatcher theo feature."
+      }
+    },
+    {
+      "id": "feat-005",
+      "phase": "P0",
+      "name": "Dữ liệu mẫu và nền kiểm thử",
+      "dependencies": [
+        "feat-003",
+        "feat-004"
+      ],
+      "source_refs": [
+        "AUTH-01",
+        "NFR-01",
+        "UAT-01",
+        "UAT-02",
+        "UAT-03",
+        "UAT-04",
+        "UAT-05",
+        "UAT-06"
+      ],
+      "description": "Tạo fixture hai pháp nhân, người kiêm nhiệm, ủy quyền, hồ sơ, tài liệu và lỗi tích hợp. Thiết lập kiểm thử unit, DB integration, API contract và hành trình trình duyệt.",
+      "planned_paths": [
+        "tests/fixtures/",
+        "tests/integration/",
+        "tests/e2e/",
+        "scripts/verify-feature/"
+      ],
+      "acceptance_criteria": [
+        "Fixture sinh lặp được, không dùng dữ liệu thật và bao gồm hồ sơ ngoài quyền.",
+        "CI chạy được một kiểm thử thật ở mỗi tầng cần thiết; không dùng test rỗng làm bằng chứng."
+      ],
+      "estimate_days": [
+        1,
+        2
+      ],
+      "decision_gates": [],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-005",
+        "assertions": [
+          "Fixture sinh lặp được, không dùng dữ liệu thật và bao gồm hồ sơ ngoài quyền.",
+          "CI chạy được một kiểm thử thật ở mỗi tầng cần thiết; không dùng test rỗng làm bằng chứng."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-006",
+      "phase": "P0",
+      "name": "Design tokens và khung ứng dụng",
+      "dependencies": [
+        "feat-003",
+        "feat-005"
+      ],
+      "source_refs": [
+        "DESIGN-02",
+        "DESIGN-03"
+      ],
+      "description": "Xây token màu, typography, spacing và thư viện thành phần dùng chung; tạo sidebar, header, bộ chọn vai trò/pháp nhân và bố cục responsive.",
+      "planned_paths": [
+        "packages/ui/",
+        "packages/design-tokens/",
+        "apps/web/src/app/"
+      ],
+      "acceptance_criteria": [
+        "Màu và font bám thiết kế; bảng, form, dialog, trạng thái trống/lỗi/loading dùng chung component.",
+        "Bàn phím, focus, tương phản và layout điện thoại được kiểm tra; dữ liệu nghiệp vụ có nhãn đầy đủ."
+      ],
+      "estimate_days": [
+        1,
+        2
+      ],
+      "decision_gates": [],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-006",
+        "assertions": [
+          "Màu và font bám thiết kế; bảng, form, dialog, trạng thái trống/lỗi/loading dùng chung component.",
+          "Bàn phím, focus, tương phản và layout điện thoại được kiểm tra; dữ liệu nghiệp vụ có nhãn đầy đủ."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-007",
+      "phase": "P1",
+      "name": "Cơ cấu tổ chức và vai trò có hiệu lực",
+      "dependencies": [
+        "feat-005",
+        "feat-006"
+      ],
+      "source_refs": [
+        "ORG-01"
+      ],
+      "description": "Mô hình hóa pháp nhân, đơn vị, người, quan hệ cấp trên và role assignment theo khoảng thời gian; cung cấp màn hình quản trị cơ cấu.",
+      "planned_paths": [
+        "apps/api/src/modules/organization/",
+        "apps/web/src/features/organization/",
+        "packages/database/migrations/"
+      ],
+      "acceptance_criteria": [
+        "Một người có hai vai trò ở hai pháp nhân và chuyển ngữ cảnh rõ ràng.",
+        "Không tạo cây vòng; thay cơ cấu có hiệu lực và lưu lịch sử."
+      ],
+      "estimate_days": [
+        1,
+        2
+      ],
+      "decision_gates": [
+        "QD-01"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-007",
+        "assertions": [
+          "Một người có hai vai trò ở hai pháp nhân và chuyển ngữ cảnh rõ ràng.",
+          "Không tạo cây vòng; thay cơ cấu có hiệu lực và lưu lịch sử."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-008",
+      "phase": "P1",
+      "name": "Đăng nhập SSO và thu hồi phiên",
+      "dependencies": [
+        "feat-007"
+      ],
+      "source_refs": [
+        "NFR-02",
+        "MOB-05"
+      ],
+      "description": "Tích hợp nguồn định danh được chọn qua adapter; quản lý phiên, logout, MFA theo khả năng IdP và vô hiệu hóa tài khoản. Đăng nhập giả chỉ tồn tại ở dev/test.",
+      "planned_paths": [
+        "apps/api/src/modules/identity/",
+        "apps/web/src/features/auth/"
+      ],
+      "acceptance_criteria": [
+        "Luồng đăng nhập thật chạy trên sandbox IdP và từ chối token sai audience/issuer/hết hạn.",
+        "Khóa tài khoản hoặc thu hồi phiên ngăn request tiếp theo trong ngưỡng đã chốt; không còn dev login trong cấu hình production."
+      ],
+      "estimate_days": [
+        2,
+        3
+      ],
+      "decision_gates": [
+        "QD-04",
+        "QD-06"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-008",
+        "assertions": [
+          "Luồng đăng nhập thật chạy trên sandbox IdP và từ chối token sai audience/issuer/hết hạn.",
+          "Khóa tài khoản hoặc thu hồi phiên ngăn request tiếp theo trong ngưỡng đã chốt; không còn dev login trong cấu hình production."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-009",
+      "phase": "P1",
+      "name": "Phân quyền tập trung và cô lập dữ liệu",
+      "dependencies": [
+        "feat-007",
+        "feat-008"
+      ],
+      "source_refs": [
+        "AUTH-01",
+        "NFR-01"
+      ],
+      "description": "Xây policy service theo vai trò, phạm vi, hành động, độ mật, hạn mức và hiệu lực; áp dụng cho API/repository. Thử nghiệm RLS ở các bảng nhạy cảm và đường đi của worker.",
+      "planned_paths": [
+        "apps/api/src/modules/authorization/",
+        "packages/database/policies/",
+        "tests/security/"
+      ],
+      "acceptance_criteria": [
+        "List/detail/count/export/download và truy cập ID trực tiếp đều từ chối ngoài quyền.",
+        "DB application role không có quyền bypass; connection pool không giữ ngữ cảnh pháp nhân của request trước."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-05"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-009",
+        "assertions": [
+          "List/detail/count/export/download và truy cập ID trực tiếp đều từ chối ngoài quyền.",
+          "DB application role không có quyền bypass; connection pool không giữ ngữ cảnh pháp nhân của request trước."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-010",
+      "phase": "P1",
+      "name": "Ủy quyền và kiểm tra thẩm quyền tại giao dịch",
+      "dependencies": [
+        "feat-009"
+      ],
+      "source_refs": [
+        "AUTH-02"
+      ],
+      "description": "Quản lý căn cứ, thời gian, hạn mức, phạm vi và thu hồi ủy quyền. Kiểm tra lại thẩm quyền trong transaction khi thực hiện quyết định.",
+      "planned_paths": [
+        "apps/api/src/modules/authority/",
+        "apps/web/src/features/delegations/"
+      ],
+      "acceptance_criteria": [
+        "Ủy quyền hết hạn hoặc bị thu hồi sau khi mở màn hình khiến thao tác duyệt thất bại.",
+        "Lịch sử giữ người thực hiện thực tế, người giao quyền và căn cứ tại thời điểm quyết định."
+      ],
+      "estimate_days": [
+        1.5,
+        3
+      ],
+      "decision_gates": [
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-010",
+        "assertions": [
+          "Ủy quyền hết hạn hoặc bị thu hồi sau khi mở màn hình khiến thao tác duyệt thất bại.",
+          "Lịch sử giữ người thực hiện thực tế, người giao quyền và căn cứ tại thời điểm quyết định."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-011",
+      "phase": "P1",
+      "name": "Nhật ký nghiệp vụ và truy cập",
+      "dependencies": [
+        "feat-009"
+      ],
+      "source_refs": [
+        "AUD-01",
+        "NFR-04"
+      ],
+      "description": "Ghi audit có actor, phạm vi, đối tượng, phiên bản, kết quả và correlation ID; bổ sung log xem/tải, đổi quyền và tích hợp. Giới hạn quyền sửa/xóa log.",
+      "planned_paths": [
+        "apps/api/src/modules/audit/",
+        "packages/database/migrations/",
+        "apps/web/src/features/audit/"
+      ],
+      "acceptance_criteria": [
+        "Một hồ sơ truy ra được chuỗi sự kiện thành công và thất bại; truy cập audit cũng có kiểm soát.",
+        "Log không chứa token/bí mật; audit nghiệp vụ quan trọng được ghi cùng transaction hoặc cơ chế bền vững tương đương."
+      ],
+      "estimate_days": [
+        1.5,
+        2.5
+      ],
+      "decision_gates": [
+        "QD-05"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-011",
+        "assertions": [
+          "Một hồ sơ truy ra được chuỗi sự kiện thành công và thất bại; truy cập audit cũng có kiểm soát.",
+          "Log không chứa token/bí mật; audit nghiệp vụ quan trọng được ghi cùng transaction hoặc cơ chế bền vững tương đương."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-012",
+      "phase": "P1",
+      "name": "Nhận tệp và lưu bản gốc an toàn",
+      "dependencies": [
+        "feat-009",
+        "feat-011"
+      ],
+      "source_refs": [
+        "DMS-03",
+        "FIN-02",
+        "NFR-01"
+      ],
+      "description": "Upload qua vùng cách ly, kiểm MIME/kích thước, quét tệp theo hạ tầng, tính SHA-256 và lưu object version. Tạo StoragePort để thay nhà cung cấp.",
+      "planned_paths": [
+        "apps/api/src/modules/files/",
+        "apps/worker/src/jobs/file-inspection/",
+        "infra/storage/"
+      ],
+      "acceptance_criteria": [
+        "Tệp chưa qua kiểm tra không được phát hành; tên tệp hoặc MIME giả không vượt kiểm tra.",
+        "Bản gốc có object key/version, hash, nguồn và người nộp; tải lại luôn kiểm quyền và ghi log."
+      ],
+      "estimate_days": [
+        2,
+        3
+      ],
+      "decision_gates": [
+        "QD-05",
+        "QD-06"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-012",
+        "assertions": [
+          "Tệp chưa qua kiểm tra không được phát hành; tên tệp hoặc MIME giả không vượt kiểm tra.",
+          "Bản gốc có object key/version, hash, nguồn và người nộp; tải lại luôn kiểm quyền và ghi log."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-013",
+      "phase": "P1",
+      "name": "Mẫu siêu dữ liệu có phiên bản",
+      "dependencies": [
+        "feat-012"
+      ],
+      "source_refs": [
+        "DMS-02",
+        "CFG-01"
+      ],
+      "description": "Khai báo trường metadata theo loại tài liệu, kiểu dữ liệu, điều kiện bắt buộc, danh mục nguồn, quyền sửa và trạng thái xác minh.",
+      "planned_paths": [
+        "apps/api/src/modules/metadata/",
+        "apps/web/src/features/metadata-admin/"
+      ],
+      "acceptance_criteria": [
+        "Thiếu trường bắt buộc tạo hàng đợi bổ sung và chặn xuất bản theo quy tắc.",
+        "Sửa mẫu tạo phiên bản mới; tài liệu cũ vẫn hiển thị đúng mẫu gốc."
+      ],
+      "estimate_days": [
+        1.5,
+        3
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-05"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-013",
+        "assertions": [
+          "Thiếu trường bắt buộc tạo hàng đợi bổ sung và chặn xuất bản theo quy tắc.",
+          "Sửa mẫu tạo phiên bản mới; tài liệu cũ vẫn hiển thị đúng mẫu gốc."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-014",
+      "phase": "P1",
+      "name": "Tài liệu phiên bản và tham chiếu",
+      "dependencies": [
+        "feat-012",
+        "feat-013"
+      ],
+      "source_refs": [
+        "DMS-01",
+        "DMS-04",
+        "DOS-01"
+      ],
+      "description": "Tách Document, DocumentVersion, StoredObject và DocumentReference; hỗ trợ góc nhìn thư mục/nghiệp vụ, chủ sở hữu và tham chiếu đúng phiên bản.",
+      "planned_paths": [
+        "apps/api/src/modules/documents/",
+        "apps/web/src/features/documents/"
+      ],
+      "acceptance_criteria": [
+        "Một bản tài liệu phục vụ nhiều hồ sơ mà không nhân bản tệp; quyền không tự lan qua liên kết.",
+        "Tạo bản mới không ghi đè bản cũ hoặc bản đã ký; tra được nguồn và người sửa."
+      ],
+      "estimate_days": [
+        2,
+        3
+      ],
+      "decision_gates": [
+        "QD-05"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-014",
+        "assertions": [
+          "Một bản tài liệu phục vụ nhiều hồ sơ mà không nhân bản tệp; quyền không tự lan qua liên kết.",
+          "Tạo bản mới không ghi đè bản cũ hoặc bản đã ký; tra được nguồn và người sửa."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-015",
+      "phase": "P1",
+      "name": "Tra cứu metadata và xem tài liệu theo quyền",
+      "dependencies": [
+        "feat-009",
+        "feat-014"
+      ],
+      "source_refs": [
+        "DMS-05",
+        "AUTH-01"
+      ],
+      "description": "Tra cứu theo pháp nhân, loại, kỳ, đối tác và thư mục; tạo viewer/download gateway. Lọc quyền trước phân trang, đếm và trả metadata.",
+      "planned_paths": [
+        "apps/api/src/modules/search/",
+        "apps/web/src/features/document-search/"
+      ],
+      "acceptance_criteria": [
+        "Tài liệu ngoài quyền không xuất hiện qua kết quả, tổng số, gợi ý, preview hoặc URL tải.",
+        "Thu hồi quyền ngăn tải mới; cache được phân theo danh tính/phạm vi và vô hiệu hóa phù hợp."
+      ],
+      "estimate_days": [
+        1.5,
+        3
+      ],
+      "decision_gates": [
+        "QD-05"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-015",
+        "assertions": [
+          "Tài liệu ngoài quyền không xuất hiện qua kết quả, tổng số, gợi ý, preview hoặc URL tải.",
+          "Thu hồi quyền ngăn tải mới; cache được phân theo danh tính/phạm vi và vô hiệu hóa phù hợp."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-016",
+      "phase": "P1",
+      "name": "Danh mục đối tác và ánh xạ mã ngoài",
+      "dependencies": [
+        "feat-007",
+        "feat-009",
+        "feat-011"
+      ],
+      "source_refs": [
+        "DMS-06"
+      ],
+      "description": "Quản lý BusinessPartner và ExternalCodeMap theo nguồn, hiệu lực và trạng thái xác minh; hỗ trợ lịch sử gộp/tách có kiểm soát.",
+      "planned_paths": [
+        "apps/api/src/modules/master-data/",
+        "apps/web/src/features/partners/"
+      ],
+      "acceptance_criteria": [
+        "Mã Bravo và TMS của cùng đối tác được ánh xạ và truy nguyên người xác nhận.",
+        "Không dùng MST làm ID duy nhất cho mọi cá nhân/pháp nhân; gộp sai có quy trình điều chỉnh."
+      ],
+      "estimate_days": [
+        1.5,
+        2.5
+      ],
+      "decision_gates": [
+        "QD-03",
+        "QD-04"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-016",
+        "assertions": [
+          "Mã Bravo và TMS của cùng đối tác được ánh xạ và truy nguyên người xác nhận.",
+          "Không dùng MST làm ID duy nhất cho mọi cá nhân/pháp nhân; gộp sai có quy trình điều chỉnh."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-017",
+      "phase": "P1",
+      "name": "Outbox hàng đợi và xử lý lặp",
+      "dependencies": [
+        "feat-003",
+        "feat-011"
+      ],
+      "source_refs": [
+        "INT-02",
+        "INT-01"
+      ],
+      "description": "Ghi outbox cùng transaction nghiệp vụ; dispatch sang worker, inbox dedup, retry/backoff, dead-letter và operation ID. Phân biệt thất bại chắc chắn với kết quả chưa rõ.",
+      "planned_paths": [
+        "apps/api/src/modules/integration-core/",
+        "apps/worker/src/",
+        "packages/database/migrations/"
+      ],
+      "acceptance_criteria": [
+        "Dừng worker giữa commit và gửi không mất sự kiện; nhận lặp không tạo tác dụng phụ thứ hai.",
+        "Timeout sau khi nguồn có thể đã xử lý chuyển unknown/reconcile; không gửi lại mù với nguồn thiếu chống lặp."
+      ],
+      "estimate_days": [
+        2,
+        3.5
+      ],
+      "decision_gates": [],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-017",
+        "assertions": [
+          "Dừng worker giữa commit và gửi không mất sự kiện; nhận lặp không tạo tác dụng phụ thứ hai.",
+          "Timeout sau khi nguồn có thể đã xử lý chuyển unknown/reconcile; không gửi lại mù với nguồn thiếu chống lặp."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-018",
+      "phase": "P1",
+      "name": "Thông báo và nhắc hạn",
+      "dependencies": [
+        "feat-009",
+        "feat-017"
+      ],
+      "source_refs": [
+        "WF-02",
+        "MOB-01",
+        "NFR-04"
+      ],
+      "description": "Tạo thông báo trong ứng dụng, lịch nhắc hạn, kênh email/push qua adapter và tùy chọn người dùng. Kiểm tra quyền người nhận khi phát và khi mở.",
+      "planned_paths": [
+        "apps/api/src/modules/notifications/",
+        "apps/worker/src/jobs/reminders/",
+        "apps/web/src/features/notifications/"
+      ],
+      "acceptance_criteria": [
+        "Job chạy lặp không gửi trùng ngoài chính sách; người đã mất quyền không nhận dữ liệu nhạy cảm.",
+        "Thông báo dẫn tới đúng hồ sơ/phiên bản; lỗi phát có trạng thái và người vận hành truy được."
+      ],
+      "estimate_days": [
+        1.5,
+        2.5
+      ],
+      "decision_gates": [
+        "QD-04"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-018",
+        "assertions": [
+          "Job chạy lặp không gửi trùng ngoài chính sách; người đã mất quyền không nhận dữ liệu nhạy cảm.",
+          "Thông báo dẫn tới đúng hồ sơ/phiên bản; lỗi phát có trạng thái và người vận hành truy được."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-019",
+      "phase": "P2",
+      "name": "Runtime biểu mẫu có phiên bản",
+      "dependencies": [
+        "feat-013",
+        "feat-016"
+      ],
+      "source_refs": [
+        "WF-01",
+        "CFG-01"
+      ],
+      "description": "Render và validate biểu mẫu từ schema; hỗ trợ danh mục nguồn, điều kiện, công thức giới hạn và quyền từng bước. Tính toán lại ở máy chủ.",
+      "planned_paths": [
+        "apps/api/src/modules/forms/",
+        "apps/web/src/features/form-runtime/"
+      ],
+      "acceptance_criteria": [
+        "Hồ sơ lưu form_version và quy tắc; sửa schema không làm hỏng hồ sơ cũ.",
+        "Payload cố sửa trường chỉ đọc hoặc giả kết quả công thức bị máy chủ từ chối."
+      ],
+      "estimate_days": [
+        2,
+        3.5
+      ],
+      "decision_gates": [
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-019",
+        "assertions": [
+          "Hồ sơ lưu form_version và quy tắc; sửa schema không làm hỏng hồ sơ cũ.",
+          "Payload cố sửa trường chỉ đọc hoặc giả kết quả công thức bị máy chủ từ chối."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-020",
+      "phase": "P2",
+      "name": "Trình cấu hình và xuất bản biểu mẫu",
+      "dependencies": [
+        "feat-019"
+      ],
+      "source_refs": [
+        "WF-01",
+        "CFG-01"
+      ],
+      "description": "Cung cấp editor theo danh sách trường, preview, kiểm tra schema, nháp và xuất bản phiên bản. Giới hạn công thức bằng DSL được kiểm tra, không chạy mã tùy ý.",
+      "planned_paths": [
+        "apps/web/src/features/form-builder/",
+        "apps/api/src/modules/forms/"
+      ],
+      "acceptance_criteria": [
+        "Quản trị nghiệp vụ tạo một form mới mà không sửa source.",
+        "Form lỗi điều kiện vòng, kiểu dữ liệu hoặc thiếu nguồn không được publish; có lịch sử xuất bản."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-020",
+        "assertions": [
+          "Quản trị nghiệp vụ tạo một form mới mà không sửa source.",
+          "Form lỗi điều kiện vòng, kiểu dữ liệu hoặc thiếu nguồn không được publish; có lịch sử xuất bản."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-021",
+      "phase": "P2",
+      "name": "Định nghĩa và kiểm tra quy trình",
+      "dependencies": [
+        "feat-019",
+        "feat-010"
+      ],
+      "source_refs": [
+        "WF-02",
+        "CFG-01"
+      ],
+      "description": "Định nghĩa node, edge, điều kiện, người xử lý, timeout và join; có version publish và mô phỏng người nhận. Editor tối thiểu dạng cấu hình, chưa làm BPMN đầy đủ.",
+      "planned_paths": [
+        "apps/api/src/modules/workflows/definitions/",
+        "apps/web/src/features/workflow-admin/"
+      ],
+      "acceptance_criteria": [
+        "Definition thiếu điểm bắt đầu/kết thúc, nhánh không đến đích hoặc join sai bị từ chối.",
+        "Mô phỏng theo số tiền/pháp nhân tìm đúng người nhận; phiên bản đang chạy không bị sửa ngầm."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-021",
+        "assertions": [
+          "Definition thiếu điểm bắt đầu/kết thúc, nhánh không đến đích hoặc join sai bị từ chối.",
+          "Mô phỏng theo số tiền/pháp nhân tìm đúng người nhận; phiên bản đang chạy không bị sửa ngầm."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-022",
+      "phase": "P2",
+      "name": "Thực thi quy trình tuần tự bền vững",
+      "dependencies": [
+        "feat-021",
+        "feat-017",
+        "feat-011"
+      ],
+      "source_refs": [
+        "WF-02",
+        "WF-04"
+      ],
+      "description": "Lưu WorkflowInstance, StepInstance, ApprovalTask và transitions trong DB; submit, resolve người duyệt và hoàn tất bước bằng transaction có kiểm soát phiên bản.",
+      "planned_paths": [
+        "apps/api/src/modules/workflows/runtime/",
+        "tests/integration/workflows/"
+      ],
+      "acceptance_criteria": [
+        "Khởi động lại API/worker không mất bước đang chờ.",
+        "Hai request cạnh tranh chỉ hoàn tất một lần và sinh đúng bước kế tiếp."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-022",
+        "assertions": [
+          "Khởi động lại API/worker không mất bước đang chờ.",
+          "Hai request cạnh tranh chỉ hoàn tất một lần và sinh đúng bước kế tiếp."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-023",
+      "phase": "P2",
+      "name": "Nhánh song song và rẽ nhánh điều kiện",
+      "dependencies": [
+        "feat-022"
+      ],
+      "source_refs": [
+        "WF-02"
+      ],
+      "description": "Bổ sung fork/join theo policy, nhánh theo hạn mức và lịch nhắc/quá hạn. Ghi lý do chọn nhánh và dữ liệu quy tắc đầu vào.",
+      "planned_paths": [
+        "apps/api/src/modules/workflows/runtime/",
+        "apps/worker/src/jobs/workflow-deadlines/"
+      ],
+      "acceptance_criteria": [
+        "Luồng hai phòng kiểm tra chỉ đi tiếp khi đúng điều kiện join; callback lặp không đếm hai lần.",
+        "Đổi số tiền dẫn tới nhánh đúng; thiếu người nhận vào hàng chờ xử lý, không tự bỏ bước."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-023",
+        "assertions": [
+          "Luồng hai phòng kiểm tra chỉ đi tiếp khi đúng điều kiện join; callback lặp không đếm hai lần.",
+          "Đổi số tiền dẫn tới nhánh đúng; thiếu người nhận vào hàng chờ xử lý, không tự bỏ bước."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-024",
+      "phase": "P2",
+      "name": "Hồ sơ tổng hợp và liên kết nguồn",
+      "dependencies": [
+        "feat-014",
+        "feat-022"
+      ],
+      "source_refs": [
+        "DOS-01",
+        "FIN-01"
+      ],
+      "description": "Tạo mã hồ sơ, loại, chủ sở hữu, kỳ, trạng thái và CaseLink tới quy trình/tài liệu/hệ thống ngoài. Xây danh sách, timeline và trang chi tiết hồ sơ.",
+      "planned_paths": [
+        "apps/api/src/modules/dossiers/",
+        "apps/web/src/features/dossiers/"
+      ],
+      "acceptance_criteria": [
+        "Tra theo mã hồ sơ, chuyến hoặc hợp đồng tới đúng nguồn có quyền.",
+        "Một hồ sơ chứa nhiều quy trình con; tham chiếu không nhân bản tài liệu hoặc mở rộng quyền."
+      ],
+      "estimate_days": [
+        2,
+        3
+      ],
+      "decision_gates": [
+        "QD-01",
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-024",
+        "assertions": [
+          "Tra theo mã hồ sơ, chuyến hoặc hợp đồng tới đúng nguồn có quyền.",
+          "Một hồ sơ chứa nhiều quy trình con; tham chiếu không nhân bản tài liệu hoặc mở rộng quyền."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-025",
+      "phase": "P2",
+      "name": "Bảng quy tắc theo loại hồ sơ và pháp nhân",
+      "dependencies": [
+        "feat-024",
+        "feat-019",
+        "feat-010"
+      ],
+      "source_refs": [
+        "CFG-01",
+        "WF-01",
+        "SIG-01"
+      ],
+      "description": "Cấu hình chứng từ bắt buộc, hạn mức, người kiểm tra, loại xác nhận, ngoại lệ và SLA theo loại việc. Publish phiên bản gắn vào hồ sơ khi trình.",
+      "planned_paths": [
+        "apps/api/src/modules/business-rules/",
+        "apps/web/src/features/rule-admin/"
+      ],
+      "acceptance_criteria": [
+        "Cùng khoản tiền ở hai pháp nhân có thể có chuỗi duyệt/chứng từ khác nhau.",
+        "Đổi rule chỉ tác động hồ sơ mới; chuyển phiên bản hồ sơ cũ là thao tác riêng có audit."
+      ],
+      "estimate_days": [
+        2,
+        3.5
+      ],
+      "decision_gates": [
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-025",
+        "assertions": [
+          "Cùng khoản tiền ở hai pháp nhân có thể có chuỗi duyệt/chứng từ khác nhau.",
+          "Đổi rule chỉ tác động hồ sơ mới; chuyển phiên bản hồ sơ cũ là thao tác riêng có audit."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-026",
+      "phase": "P2",
+      "name": "Hộp duyệt và quyết định có snapshot",
+      "dependencies": [
+        "feat-023",
+        "feat-024",
+        "feat-025",
+        "feat-018"
+      ],
+      "source_refs": [
+        "WF-04",
+        "AUTH-02",
+        "MOB-02"
+      ],
+      "description": "Xây inbox, chi tiết bản trình và API quyết định. Lưu snapshot, người thực hiện, thẩm quyền, ý kiến và operation ID trong transaction.",
+      "planned_paths": [
+        "apps/api/src/modules/approvals/",
+        "apps/web/src/features/approval-inbox/"
+      ],
+      "acceptance_criteria": [
+        "Người duyệt xem đúng bản dữ liệu/tài liệu được gắn vào quyết định.",
+        "Nhấn hai lần hoặc retry cùng operation ID trả cùng kết quả; request sai snapshot hoặc hết quyền không duyệt được."
+      ],
+      "estimate_days": [
+        2,
+        3
+      ],
+      "decision_gates": [
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-026",
+        "assertions": [
+          "Người duyệt xem đúng bản dữ liệu/tài liệu được gắn vào quyết định.",
+          "Nhấn hai lần hoặc retry cùng operation ID trả cùng kết quả; request sai snapshot hoặc hết quyền không duyệt được."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-027",
+      "phase": "P2",
+      "name": "Vô hiệu hóa phê duyệt khi thay đổi trọng yếu",
+      "dependencies": [
+        "feat-026"
+      ],
+      "source_refs": [
+        "WF-05",
+        "MOB-04"
+      ],
+      "description": "Phân loại trường trọng yếu và diff; tăng revision, thu hồi task cũ, đánh dấu quyết định bị thay thế và khởi tạo trình lại theo policy.",
+      "planned_paths": [
+        "apps/api/src/modules/approvals/",
+        "apps/web/src/features/dossier-diff/"
+      ],
+      "acceptance_criteria": [
+        "Đổi số tiền, đối tác, thụ hưởng hoặc hóa đơn khiến nút duyệt bản cũ trả lỗi STALE_SNAPSHOT.",
+        "Giữ được chuỗi trước/sau và so sánh thay đổi; giao dịch đổi dữ liệu cạnh tranh với duyệt không tạo bản duyệt sai."
+      ],
+      "estimate_days": [
+        2,
+        3.5
+      ],
+      "decision_gates": [
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-027",
+        "assertions": [
+          "Đổi số tiền, đối tác, thụ hưởng hoặc hóa đơn khiến nút duyệt bản cũ trả lỗi STALE_SNAPSHOT.",
+          "Giữ được chuỗi trước/sau và so sánh thay đổi; giao dịch đổi dữ liệu cạnh tranh với duyệt không tạo bản duyệt sai."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-028",
+      "phase": "P2",
+      "name": "Trả lại rút trình và đổi người xử lý",
+      "dependencies": [
+        "feat-027"
+      ],
+      "source_refs": [
+        "WF-02",
+        "WF-04"
+      ],
+      "description": "Xử lý yêu cầu bổ sung, từ chối, rút trình và reassign theo quyền; bảo toàn lịch sử và sinh lại task khi trình lại.",
+      "planned_paths": [
+        "apps/api/src/modules/workflows/actions/",
+        "apps/web/src/features/approval-actions/"
+      ],
+      "acceptance_criteria": [
+        "Rút trình hoặc trả lại đóng đúng task và không để người cũ duyệt được.",
+        "Đổi người xử lý có căn cứ/audit, không xóa ý kiến cũ và không vượt thẩm quyền."
+      ],
+      "estimate_days": [
+        1.5,
+        3
+      ],
+      "decision_gates": [
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-028",
+        "assertions": [
+          "Rút trình hoặc trả lại đóng đúng task và không để người cũ duyệt được.",
+          "Đổi người xử lý có căn cứ/audit, không xóa ý kiến cũ và không vượt thẩm quyền."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-029",
+      "phase": "P2",
+      "name": "Điều phối quy trình con",
+      "dependencies": [
+        "feat-024",
+        "feat-028",
+        "feat-017"
+      ],
+      "source_refs": [
+        "WF-03",
+        "FIN-01"
+      ],
+      "description": "Kích hoạt quy trình con từ kết quả quy trình trước; cấu hình dữ liệu kế thừa, điều kiện chờ và xử lý phụ thuộc khi hủy/lỗi.",
+      "planned_paths": [
+        "apps/api/src/modules/dossier-orchestration/",
+        "apps/worker/src/jobs/dossier-events/"
+      ],
+      "acceptance_criteria": [
+        "Sự kiện hoàn tất mua sắm chỉ tạo một bước hợp đồng hoặc việc kế tiếp với dữ liệu đã xác nhận.",
+        "Hủy quy trình nguồn cảnh báo hồ sơ phụ thuộc và yêu cầu xử lý theo policy; không tự xóa chứng từ đã chốt."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-029",
+        "assertions": [
+          "Sự kiện hoàn tất mua sắm chỉ tạo một bước hợp đồng hoặc việc kế tiếp với dữ liệu đã xác nhận.",
+          "Hủy quy trình nguồn cảnh báo hồ sơ phụ thuộc và yêu cầu xử lý theo policy; không tự xóa chứng từ đã chốt."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-030",
+      "phase": "P2",
+      "name": "Duyệt trên web điện thoại",
+      "dependencies": [
+        "feat-026",
+        "feat-027",
+        "feat-006"
+      ],
+      "source_refs": [
+        "MOB-01",
+        "MOB-02",
+        "MOB-03",
+        "MOB-05"
+      ],
+      "description": "Hoàn thiện inbox và chi tiết responsive cho pilot; hiển thị trạng thái gửi/xác nhận/lỗi và tra operation khi mất kết nối.",
+      "planned_paths": [
+        "apps/web/src/features/mobile-approval/",
+        "apps/web/src/features/approval-inbox/"
+      ],
+      "acceptance_criteria": [
+        "Điện thoại xem được tài liệu, cảnh báo, lịch sử và đúng bản trình trước khi duyệt.",
+        "Mất mạng sau bấm duyệt không hiển thị hoàn tất giả; không thực hiện quyết định offline."
+      ],
+      "estimate_days": [
+        1.5,
+        3
+      ],
+      "decision_gates": [
+        "QD-01"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-030",
+        "assertions": [
+          "Điện thoại xem được tài liệu, cảnh báo, lịch sử và đúng bản trình trước khi duyệt.",
+          "Mất mạng sau bấm duyệt không hiển thị hoàn tất giả; không thực hiện quyết định offline."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-031",
+      "phase": "P2",
+      "name": "Phân loại chữ ký và bằng chứng nội bộ",
+      "dependencies": [
+        "feat-025",
+        "feat-026"
+      ],
+      "source_refs": [
+        "SIG-01"
+      ],
+      "description": "Tách xác nhận người lập, ý kiến kiểm tra, phê duyệt nội bộ, ký điện tử và ký số thành hành vi có bằng chứng riêng.",
+      "planned_paths": [
+        "apps/api/src/modules/signatures/policies/",
+        "apps/web/src/features/signature-evidence/"
+      ],
+      "acceptance_criteria": [
+        "Tờ trình nội bộ và công văn ban hành có policy ký khác nhau.",
+        "Ảnh chữ ký hoặc animation con dấu không được ghi là kết quả ký số đã xác minh."
+      ],
+      "estimate_days": [
+        1,
+        2
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-04"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-031",
+        "assertions": [
+          "Tờ trình nội bộ và công văn ban hành có policy ký khác nhau.",
+          "Ảnh chữ ký hoặc animation con dấu không được ghi là kết quả ký số đã xác minh."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-032",
+      "phase": "P2",
+      "name": "Ký số qua nhà cung cấp và xác minh kết quả",
+      "dependencies": [
+        "feat-031",
+        "feat-014",
+        "feat-017"
+      ],
+      "source_refs": [
+        "SIG-02",
+        "INT-01",
+        "INT-02"
+      ],
+      "description": "Triển khai SignatureProviderPort với nhà cung cấp được chọn; khóa hash phiên bản đầu vào, xử lý yêu cầu/callback, xác minh và lưu artifact đã ký riêng.",
+      "planned_paths": [
+        "apps/api/src/modules/signatures/providers/",
+        "apps/worker/src/jobs/signatures/",
+        "docs/integrations/signing/"
+      ],
+      "acceptance_criteria": [
+        "Sandbox nhà cung cấp trả tài liệu ký thật và kết quả xác minh, chứng thư, thời điểm, người ký/căn cứ.",
+        "Callback giả/lặp hoặc bản gốc đã thay đổi không được ghi hoàn tất; kết quả chưa rõ được đối soát."
+      ],
+      "estimate_days": [
+        3,
+        6
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-04"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-032",
+        "assertions": [
+          "Sandbox nhà cung cấp trả tài liệu ký thật và kết quả xác minh, chứng thư, thời điểm, người ký/căn cứ.",
+          "Callback giả/lặp hoặc bản gốc đã thay đổi không được ghi hoàn tất; kết quả chưa rõ được đối soát."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-033",
+      "phase": "P2",
+      "name": "Chốt hồ sơ khóa kỳ và điều chỉnh",
+      "dependencies": [
+        "feat-029",
+        "feat-027",
+        "feat-031",
+        "feat-014"
+      ],
+      "source_refs": [
+        "DOS-02",
+        "DOS-03"
+      ],
+      "description": "Tạo snapshot danh mục, phiên bản tài liệu, quyết định và trạng thái ký; triển khai khóa kỳ, phụ lục/điều chỉnh và quan hệ thay thế.",
+      "planned_paths": [
+        "apps/api/src/modules/dossiers/snapshots/",
+        "apps/web/src/features/dossier-close/"
+      ],
+      "acceptance_criteria": [
+        "Chỉ hoàn tất khi đủ kết quả bắt buộc theo policy; bản snapshot truy được chính xác sau khi tài liệu phát sinh phiên bản mới.",
+        "Sau khóa chỉ bổ sung bằng điều chỉnh có người chấp thuận và căn cứ; bản chốt không bị ghi đè."
+      ],
+      "estimate_days": [
+        2,
+        3.5
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-05"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-033",
+        "assertions": [
+          "Chỉ hoàn tất khi đủ kết quả bắt buộc theo policy; bản snapshot truy được chính xác sau khi tài liệu phát sinh phiên bản mới.",
+          "Sau khóa chỉ bổ sung bằng điều chỉnh có người chấp thuận và căn cứ; bản chốt không bị ghi đè."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-034",
+      "phase": "P2",
+      "name": "Nghiệm thu pilot trình duyệt hồ sơ",
+      "dependencies": [
+        "feat-020",
+        "feat-030",
+        "feat-033"
+      ],
+      "source_refs": [
+        "UAT-02",
+        "UAT-04",
+        "WF-01",
+        "WF-02",
+        "WF-03",
+        "WF-04",
+        "WF-05"
+      ],
+      "description": "Chạy pilot tờ trình nội bộ trong phạm vi pháp nhân/quy trình đã chọn, gồm rẽ nhánh, song song, ủy quyền và thay đổi bản trình. Đây là nghiệm thu một phần UAT, trước luồng tài chính và native mobile.",
+      "planned_paths": [
+        "tests/e2e/pilot/",
+        "docs/uat/pilot/",
+        "docs/runbooks/pilot/"
+      ],
+      "acceptance_criteria": [
+        "Chủ nghiệp vụ ký nhận các tình huống pilot, người dùng thực hiện lại được theo hướng dẫn.",
+        "Báo cáo nêu rõ phần UAT-02/UAT-04 còn chờ tài chính, mobile native hoặc CA; không gọi là nghiệm thu toàn bộ SRS."
+      ],
+      "estimate_days": [
+        2,
+        3
+      ],
+      "decision_gates": [
+        "QD-01",
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-034",
+        "assertions": [
+          "Chủ nghiệp vụ ký nhận các tình huống pilot, người dùng thực hiện lại được theo hướng dẫn.",
+          "Báo cáo nêu rõ phần UAT-02/UAT-04 còn chờ tài chính, mobile native hoặc CA; không gọi là nghiệm thu toàn bộ SRS."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-035",
+      "phase": "P3",
+      "name": "Hợp đồng và phụ lục",
+      "dependencies": [
+        "feat-014",
+        "feat-029",
+        "feat-016"
+      ],
+      "source_refs": [
+        "CON-01",
+        "DMS-04",
+        "FIN-01"
+      ],
+      "description": "Quản lý chủ trì, đối tác, giá trị, hiệu lực, rà soát, ký, phụ lục và gia hạn; gắn hợp đồng khung vào nhiều hồ sơ.",
+      "planned_paths": [
+        "apps/api/src/modules/contracts/",
+        "apps/web/src/features/contracts/"
+      ],
+      "acceptance_criteria": [
+        "Một hợp đồng khung dùng cho nhiều hồ sơ có quyền và phân biệt ký nội bộ/đối tác.",
+        "Phụ lục không sửa bản ký; hợp đồng hết hiệu lực cảnh báo các hồ sơ liên quan."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-04"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-035",
+        "assertions": [
+          "Một hợp đồng khung dùng cho nhiều hồ sơ có quyền và phân biệt ký nội bộ/đối tác.",
+          "Phụ lục không sửa bản ký; hợp đồng hết hiệu lực cảnh báo các hồ sơ liên quan."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-036",
+      "phase": "P3",
+      "name": "Hồ sơ tài chính theo loại giao dịch",
+      "dependencies": [
+        "feat-024",
+        "feat-025",
+        "feat-035"
+      ],
+      "source_refs": [
+        "FIN-01",
+        "FIN-05",
+        "FIN-07"
+      ],
+      "description": "Cấu hình các luồng thanh toán, tạm ứng, hoàn ứng, nhiều đợt, dịch vụ không PO và chứng từ đến muộn; liên kết kết quả quy trình theo hồ sơ tổng hợp.",
+      "planned_paths": [
+        "apps/api/src/modules/finance/dossiers/",
+        "apps/web/src/features/finance-dossiers/"
+      ],
+      "acceptance_criteria": [
+        "Mỗi loại giao dịch dùng đúng ma trận chứng từ/ngoại lệ; không ép có PO/hợp đồng cho mọi trường hợp.",
+        "Theo mã hồ sơ truy được đề xuất, hợp đồng, chứng từ, yêu cầu thanh toán và tham chiếu Bravo."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-03"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-036",
+        "assertions": [
+          "Mỗi loại giao dịch dùng đúng ma trận chứng từ/ngoại lệ; không ép có PO/hợp đồng cho mọi trường hợp.",
+          "Theo mã hồ sơ truy được đề xuất, hợp đồng, chứng từ, yêu cầu thanh toán và tham chiếu Bravo."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-037",
+      "phase": "P3",
+      "name": "Tiếp nhận và phân tích hóa đơn XML",
+      "dependencies": [
+        "feat-012",
+        "feat-016",
+        "feat-036"
+      ],
+      "source_refs": [
+        "FIN-02",
+        "FIN-03",
+        "DESIGN-04-1"
+      ],
+      "description": "Giữ nguyên byte hóa đơn gốc; parser XML theo phiên bản mẫu được khảo sát, tắt thực thể ngoài và giới hạn tài nguyên. Tách parsing, kiểm tra toàn vẹn và xác minh chữ ký hóa đơn.",
+      "planned_paths": [
+        "apps/api/src/modules/finance/invoices/",
+        "apps/worker/src/jobs/invoice-parsing/"
+      ],
+      "acceptance_criteria": [
+        "Có trường hóa đơn kèm nguồn và trạng thái xác minh; XML lỗi/thiếu hoặc chỉ PDF được phân loại rõ.",
+        "Tệp có XXE hoặc cấu trúc vượt giới hạn bị chặn; parse thành công không tự đồng nghĩa chữ ký/giá trị pháp lý hợp lệ."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-037",
+        "assertions": [
+          "Có trường hóa đơn kèm nguồn và trạng thái xác minh; XML lỗi/thiếu hoặc chỉ PDF được phân loại rõ.",
+          "Tệp có XXE hoặc cấu trúc vượt giới hạn bị chặn; parse thành công không tự đồng nghĩa chữ ký/giá trị pháp lý hợp lệ."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-038",
+      "phase": "P3",
+      "name": "OCR và xác nhận dữ liệu trích xuất",
+      "dependencies": [
+        "feat-037",
+        "feat-017"
+      ],
+      "source_refs": [
+        "FIN-03"
+      ],
+      "description": "Tích hợp OCR qua port, lưu vùng nguồn và confidence; cung cấp giao diện so sánh tài liệu với trường trích xuất và chỉnh có audit.",
+      "planned_paths": [
+        "apps/api/src/modules/extraction/",
+        "apps/worker/src/jobs/ocr/",
+        "apps/web/src/features/extraction-review/"
+      ],
+      "acceptance_criteria": [
+        "MST OCR sai được sửa có giá trị trước/sau, người sửa và thời gian.",
+        "Trường chưa xác nhận không làm đầu vào phê duyệt tự động; lỗi OCR có hàng chờ xử lý thủ công."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-06"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-038",
+        "assertions": [
+          "MST OCR sai được sửa có giá trị trước/sau, người sửa và thời gian.",
+          "Trường chưa xác nhận không làm đầu vào phê duyệt tự động; lỗi OCR có hàng chờ xử lý thủ công."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-039",
+      "phase": "P3",
+      "name": "Chống trùng hóa đơn và quan hệ điều chỉnh",
+      "dependencies": [
+        "feat-037",
+        "feat-009"
+      ],
+      "source_refs": [
+        "FIN-06"
+      ],
+      "description": "Chuẩn hóa khóa nghiệp vụ theo ma trận được chốt; phân biệt nháp, nghi trùng, hủy, thay thế và điều chỉnh. Dùng constraint/locking để chống hai lần nhập cạnh tranh.",
+      "planned_paths": [
+        "apps/api/src/modules/finance/invoice-identity/",
+        "packages/database/migrations/"
+      ],
+      "acceptance_criteria": [
+        "Cùng hóa đơn nhập đồng thời không tạo hai bản chính; file khác hash vẫn có thể bị phát hiện trùng nghiệp vụ.",
+        "Cảnh báo trùng ngoài quyền không lộ tên, số tiền hoặc mã hồ sơ khác; người có thẩm quyền xử lý được nghi trùng."
+      ],
+      "estimate_days": [
+        2,
+        3.5
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-05"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-039",
+        "assertions": [
+          "Cùng hóa đơn nhập đồng thời không tạo hai bản chính; file khác hash vẫn có thể bị phát hiện trùng nghiệp vụ.",
+          "Cảnh báo trùng ngoài quyền không lộ tên, số tiền hoặc mã hồ sơ khác; người có thẩm quyền xử lý được nghi trùng."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-040",
+      "phase": "P3",
+      "name": "Nguồn nghiệm thu chuyến và dịch vụ",
+      "dependencies": [
+        "feat-036",
+        "feat-017",
+        "feat-016"
+      ],
+      "source_refs": [
+        "FIN-04",
+        "INT-01",
+        "INT-04"
+      ],
+      "description": "Chuẩn hóa dữ liệu nghiệm thu, chuyến, kho/dịch vụ từ TMS/WMS hoặc nhập được xác nhận; giữ ID nguồn, thời điểm và phiên bản chứng cứ.",
+      "planned_paths": [
+        "apps/api/src/modules/operations-evidence/",
+        "apps/api/src/adapters/tms-wms/"
+      ],
+      "acceptance_criteria": [
+        "Dữ liệu nguồn có trạng thái xác nhận/freshness và truy được bản chứng từ gốc.",
+        "Nguồn chưa có API dùng quy trình nhập/đối chiếu được phê duyệt; giao diện ghi đúng mức kết nối."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-04"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-040",
+        "assertions": [
+          "Dữ liệu nguồn có trạng thái xác nhận/freshness và truy được bản chứng từ gốc.",
+          "Nguồn chưa có API dùng quy trình nhập/đối chiếu được phê duyệt; giao diện ghi đúng mức kết nối."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-041",
+      "phase": "P3",
+      "name": "Bộ đối soát có giải thích",
+      "dependencies": [
+        "feat-035",
+        "feat-037",
+        "feat-040",
+        "feat-025"
+      ],
+      "source_refs": [
+        "FIN-04",
+        "DESIGN-04-1"
+      ],
+      "description": "Đối chiếu các trường áp dụng giữa hợp đồng/đơn mua, nghiệm thu, hóa đơn và yêu cầu thanh toán; lưu căn cứ, ngưỡng và phiên bản rule.",
+      "planned_paths": [
+        "apps/api/src/modules/finance/matching/",
+        "apps/web/src/features/matching/"
+      ],
+      "acceptance_criteria": [
+        "Kết quả phân biệt khớp, trong ngưỡng, vượt ngưỡng, thiếu dữ liệu và không áp dụng; chỉ rõ trường/căn cứ.",
+        "Dịch vụ không PO không bị báo thiếu PO; có kiểm tra thủ công và không dùng nhãn 100% cho dữ liệu chưa xác nhận."
+      ],
+      "estimate_days": [
+        3,
+        5
+      ],
+      "decision_gates": [
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-041",
+        "assertions": [
+          "Kết quả phân biệt khớp, trong ngưỡng, vượt ngưỡng, thiếu dữ liệu và không áp dụng; chỉ rõ trường/căn cứ.",
+          "Dịch vụ không PO không bị báo thiếu PO; có kiểm tra thủ công và không dùng nhãn 100% cho dữ liệu chưa xác nhận."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-042",
+      "phase": "P3",
+      "name": "Phân bổ hóa đơn và thanh toán nhiều đợt",
+      "dependencies": [
+        "feat-036",
+        "feat-039",
+        "feat-041"
+      ],
+      "source_refs": [
+        "FIN-05"
+      ],
+      "description": "Quản lý allocation theo dòng/chuyến, số dư hợp đồng/hóa đơn và yêu cầu thanh toán. Dùng số thập phân chính xác, currency và transaction kiểm tra giới hạn.",
+      "planned_paths": [
+        "apps/api/src/modules/finance/allocations/",
+        "apps/web/src/features/allocations/"
+      ],
+      "acceptance_criteria": [
+        "Tổng phân bổ/số dư đúng với thanh toán nhiều đợt, điều chỉnh và hai request đồng thời.",
+        "Số đã duyệt, đã chuyển Bravo và đã thanh toán được tách riêng, không cộng trùng hoặc suy diễn trạng thái chi."
+      ],
+      "estimate_days": [
+        3,
+        5
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-03"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-042",
+        "assertions": [
+          "Tổng phân bổ/số dư đúng với thanh toán nhiều đợt, điều chỉnh và hai request đồng thời.",
+          "Số đã duyệt, đã chuyển Bravo và đã thanh toán được tách riêng, không cộng trùng hoặc suy diễn trạng thái chi."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-043",
+      "phase": "P3",
+      "name": "Phê duyệt ngoại lệ tài chính",
+      "dependencies": [
+        "feat-041",
+        "feat-042",
+        "feat-028"
+      ],
+      "source_refs": [
+        "FIN-07"
+      ],
+      "description": "Tạo yêu cầu ngoại lệ cho thiếu chứng từ/hợp đồng, vượt ngân sách hoặc sai lệch; quản lý lý do, chứng từ thay thế, người duyệt và thời hạn bổ sung.",
+      "planned_paths": [
+        "apps/api/src/modules/finance/exceptions/",
+        "apps/web/src/features/finance-exceptions/"
+      ],
+      "acceptance_criteria": [
+        "Ngoại lệ hợp lệ đi đúng cấp và hiện rõ căn cứ, không đổi nhãn thành hồ sơ đạt chuẩn.",
+        "Người không đủ quyền không bỏ qua kiểm tra; nghĩa vụ bổ sung còn tồn tại được theo dõi đến khi xử lý."
+      ],
+      "estimate_days": [
+        2,
+        3.5
+      ],
+      "decision_gates": [
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-043",
+        "assertions": [
+          "Ngoại lệ hợp lệ đi đúng cấp và hiện rõ căn cứ, không đổi nhãn thành hồ sơ đạt chuẩn.",
+          "Người không đủ quyền không bỏ qua kiểm tra; nghĩa vụ bổ sung còn tồn tại được theo dõi đến khi xử lý."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-044",
+      "phase": "P3",
+      "name": "Dữ liệu ngân sách và cảnh báo có nguồn",
+      "dependencies": [
+        "feat-036",
+        "feat-042"
+      ],
+      "source_refs": [
+        "FIN-07",
+        "MOB-02"
+      ],
+      "description": "Nhận số liệu ngân sách từ nguồn hoặc bản nhập đã được duyệt; hiển thị kỳ, freshness và quy tắc kiểm tra. Chỉ bổ sung cơ chế giữ chỗ ngân sách nếu được chốt trong phạm vi.",
+      "planned_paths": [
+        "apps/api/src/modules/finance/budget-context/",
+        "apps/web/src/features/budget-context/"
+      ],
+      "acceptance_criteria": [
+        "Không có số liệu thì hiển thị chưa có dữ liệu, không tự sinh tỷ lệ ngân sách còn lại.",
+        "Mốc/kỳ và nguồn truy được; quy tắc vượt ngân sách dẫn tới chặn hoặc ngoại lệ đúng chính sách."
+      ],
+      "estimate_days": [
+        1.5,
+        3
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-03"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-044",
+        "assertions": [
+          "Không có số liệu thì hiển thị chưa có dữ liệu, không tự sinh tỷ lệ ngân sách còn lại.",
+          "Mốc/kỳ và nguồn truy được; quy tắc vượt ngân sách dẫn tới chặn hoặc ngoại lệ đúng chính sách."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-045",
+      "phase": "P3",
+      "name": "Tích hợp chuyển hồ sơ sang Bravo",
+      "dependencies": [
+        "feat-017",
+        "feat-042",
+        "feat-043"
+      ],
+      "source_refs": [
+        "FIN-08",
+        "INT-01",
+        "INT-02",
+        "INT-04"
+      ],
+      "description": "Triển khai adapter theo API, file trao đổi hoặc cơ chế Bravo thực tế hỗ trợ; gửi hồ sơ đã duyệt, nhận ack/số chứng từ và trạng thái. Chốt trách nhiệm vận hành với bên Bravo.",
+      "planned_paths": [
+        "apps/api/src/adapters/bravo/",
+        "apps/worker/src/jobs/bravo/",
+        "docs/integrations/bravo/"
+      ],
+      "acceptance_criteria": [
+        "Sandbox thật nhận đúng đối tượng nghiệp vụ, trả số chứng từ; bản đồ trường và mỗi chiều có test thành công/thất bại.",
+        "Replay không tạo chứng từ đôi; nếu nguồn thiếu chống lặp/tra cứu thì timeout chưa rõ chặn gửi lại và chuyển đối soát có người xử lý."
+      ],
+      "estimate_days": [
+        3,
+        6
+      ],
+      "decision_gates": [
+        "QD-03"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-045",
+        "assertions": [
+          "Sandbox thật nhận đúng đối tượng nghiệp vụ, trả số chứng từ; bản đồ trường và mỗi chiều có test thành công/thất bại.",
+          "Replay không tạo chứng từ đôi; nếu nguồn thiếu chống lặp/tra cứu thì timeout chưa rõ chặn gửi lại và chuyển đối soát có người xử lý."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-046",
+      "phase": "P3",
+      "name": "Đối chiếu Bravo và bàn xử lý tích hợp",
+      "dependencies": [
+        "feat-045"
+      ],
+      "source_refs": [
+        "INT-03",
+        "FIN-08",
+        "NFR-04"
+      ],
+      "description": "Đối chiếu số chứng từ, số tiền, trạng thái nhận/phê duyệt/thanh toán theo dữ liệu nguồn cho phép; xây danh sách sai lệch, retry có kiểm soát và audit xử lý.",
+      "planned_paths": [
+        "apps/api/src/modules/reconciliation/",
+        "apps/web/src/features/integration-operations/"
+      ],
+      "acceptance_criteria": [
+        "Cố ý lệch một trạng thái sinh issue có correlation ID và chủ xử lý.",
+        "Mất kết nối rồi khôi phục không mất dữ liệu; sửa mapping hoặc gửi lại ghi căn cứ và không bỏ qua trạng thái unknown."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-03"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-046",
+        "assertions": [
+          "Cố ý lệch một trạng thái sinh issue có correlation ID và chủ xử lý.",
+          "Mất kết nối rồi khôi phục không mất dữ liệu; sửa mapping hoặc gửi lại ghi căn cứ và không bỏ qua trạng thái unknown."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-047",
+      "phase": "P3",
+      "name": "Xuất bộ hồ sơ kiểm tra",
+      "dependencies": [
+        "feat-033",
+        "feat-046",
+        "feat-011",
+        "feat-015"
+      ],
+      "source_refs": [
+        "FIN-09",
+        "DOS-02"
+      ],
+      "description": "Sinh gói hồ sơ theo kỳ/pháp nhân/giao dịch với manifest, bản chứng từ đúng phiên bản, quyết định, kết quả ký và số Bravo; xử lý xuất bất đồng bộ theo quyền.",
+      "planned_paths": [
+        "apps/api/src/modules/dossier-export/",
+        "apps/worker/src/jobs/exports/",
+        "apps/web/src/features/dossier-export/"
+      ],
+      "acceptance_criteria": [
+        "Manifest đối chiếu được số lượng, version và hash; bản chốt không bị thay bằng bản mới nhất.",
+        "Kiểm quyền khi tạo job, khi chạy và khi tải; gói xuất không chứa tài liệu ngoài phạm vi và có hạn truy cập."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-05"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-047",
+        "assertions": [
+          "Manifest đối chiếu được số lượng, version và hash; bản chốt không bị thay bằng bản mới nhất.",
+          "Kiểm quyền khi tạo job, khi chạy và khi tải; gói xuất không chứa tài liệu ngoài phạm vi và có hạn truy cập."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-048",
+      "phase": "P3",
+      "name": "Nghiệm thu tài chính và chuỗi nhiều quy trình",
+      "dependencies": [
+        "feat-038",
+        "feat-039",
+        "feat-044",
+        "feat-047"
+      ],
+      "source_refs": [
+        "UAT-01",
+        "UAT-02"
+      ],
+      "description": "Chạy xuyên suốt vận tải và mua bán nhiều quy trình với dữ liệu mẫu được duyệt, nhà cung cấp sandbox thật, lỗi kết nối và thay đổi chứng từ.",
+      "planned_paths": [
+        "tests/e2e/finance/",
+        "docs/uat/finance/"
+      ],
+      "acceptance_criteria": [
+        "UAT-01 và UAT-02 có cả happy path, ngoại lệ, trùng, nhiều đợt, retry và xuất bộ chứng từ.",
+        "Kế toán xác nhận ranh giới E Office/Bravo và đối chiếu số liệu; mock không được dùng làm bằng chứng tích hợp thật. Nếu policy yêu cầu ký số thì feat-032 cũng phải hoàn tất."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-01",
+        "QD-02",
+        "QD-03",
+        "QD-04"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-048",
+        "assertions": [
+          "UAT-01 và UAT-02 có cả happy path, ngoại lệ, trùng, nhiều đợt, retry và xuất bộ chứng từ.",
+          "Kế toán xác nhận ranh giới E Office/Bravo và đối chiếu số liệu; mock không được dùng làm bằng chứng tích hợp thật. Nếu policy yêu cầu ký số thì feat-032 cũng phải hoàn tất."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-049",
+      "phase": "P3",
+      "name": "Báo cáo tài chính và in theo mã nguồn",
+      "dependencies": [
+        "feat-046",
+        "feat-047"
+      ],
+      "source_refs": [
+        "FIN-01",
+        "FIN-05",
+        "FIN-09"
+      ],
+      "description": "Tổng hợp tiến độ xử lý, số dư, sai lệch và trạng thái Bravo; truy nguồn từ chỉ tiêu xuống giao dịch và in bộ hồ sơ theo mã/số bút toán.",
+      "planned_paths": [
+        "apps/api/src/modules/finance/reporting/",
+        "apps/web/src/features/finance-reports/"
+      ],
+      "acceptance_criteria": [
+        "Chỉ tiêu truy được giao dịch nguồn và phân biệt các trạng thái tiền.",
+        "Lọc pháp nhân/kỳ theo quyền, in đúng snapshot và không dùng chỉ tiêu mô phỏng như dữ liệu thật."
+      ],
+      "estimate_days": [
+        1.5,
+        3
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-03"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-049",
+        "assertions": [
+          "Chỉ tiêu truy được giao dịch nguồn và phân biệt các trạng thái tiền.",
+          "Lọc pháp nhân/kỳ theo quyền, in đúng snapshot và không dùng chỉ tiêu mô phỏng như dữ liệu thật."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-050",
+      "phase": "P4",
+      "name": "Các kênh nhận tài liệu và hàng chờ chất lượng",
+      "dependencies": [
+        "feat-012",
+        "feat-013",
+        "feat-017"
+      ],
+      "source_refs": [
+        "DMS-03"
+      ],
+      "description": "Bổ sung batch upload, scanner/email hoặc nguồn được chọn; chuẩn hóa thông tin nguồn, chống nhập lặp, cách ly và phân công bổ sung metadata.",
+      "planned_paths": [
+        "apps/api/src/modules/document-intake/",
+        "apps/worker/src/jobs/intake/",
+        "apps/web/src/features/intake-queue/"
+      ],
+      "acceptance_criteria": [
+        "Mỗi kênh được chọn có trace nguồn/người nộp và trạng thái chất lượng.",
+        "Tệp thiếu trường hoặc bị nghi độc không vào kho chính thức; quét lại cùng batch không nhân bản."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-01",
+        "QD-04",
+        "QD-05"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-050",
+        "assertions": [
+          "Mỗi kênh được chọn có trace nguồn/người nộp và trạng thái chất lượng.",
+          "Tệp thiếu trường hoặc bị nghi độc không vào kho chính thức; quét lại cùng batch không nhân bản."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-051",
+      "phase": "P4",
+      "name": "Tìm nội dung và ngăn lộ dữ liệu qua chỉ mục",
+      "dependencies": [
+        "feat-015",
+        "feat-038",
+        "feat-017"
+      ],
+      "source_refs": [
+        "DMS-05",
+        "AUTH-01",
+        "DESIGN-04-2"
+      ],
+      "description": "Trích xuất và lập chỉ mục nội dung với search port; bắt đầu bằng tìm metadata và full text phù hợp tải. Quyền áp dụng trước kết quả, snippet, facet và tổng số.",
+      "planned_paths": [
+        "apps/api/src/modules/search/",
+        "apps/worker/src/jobs/indexing/",
+        "tests/security/search/"
+      ],
+      "acceptance_criteria": [
+        "Từ khóa chỉ có trong tài liệu ngoài quyền không sinh hàng ẩn, snippet, gợi ý hoặc số đếm gây lộ.",
+        "Thu hồi quyền chặn trả dữ liệu ngay cả khi chỉ mục chưa cập nhật; tiếng Việt có bộ truy vấn đánh giá."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-05",
+        "QD-06"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-051",
+        "assertions": [
+          "Từ khóa chỉ có trong tài liệu ngoài quyền không sinh hàng ẩn, snippet, gợi ý hoặc số đếm gây lộ.",
+          "Thu hồi quyền chặn trả dữ liệu ngay cả khi chỉ mục chưa cập nhật; tiếng Việt có bộ truy vấn đánh giá."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-052",
+      "phase": "P4",
+      "name": "Đồ thị tham chiếu hồ sơ và tài liệu",
+      "dependencies": [
+        "feat-014",
+        "feat-024",
+        "feat-051"
+      ],
+      "source_refs": [
+        "DMS-01",
+        "DOS-01",
+        "DESIGN-04-2"
+      ],
+      "description": "Hiển thị hợp đồng, tài liệu, hồ sơ và nguồn liên quan bằng danh sách hoặc đồ thị; tải từng phần và lọc node/edge theo quyền.",
+      "planned_paths": [
+        "apps/api/src/modules/document-relations/",
+        "apps/web/src/features/reference-graph/"
+      ],
+      "acceptance_criteria": [
+        "Một bản hợp đồng thể hiện nhiều nơi dùng mà không tăng số object lưu.",
+        "Quan hệ sang hồ sơ ngoài quyền không lộ node, edge, tổng số hoặc metadata bị cấm."
+      ],
+      "estimate_days": [
+        1.5,
+        3
+      ],
+      "decision_gates": [
+        "QD-05"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-052",
+        "assertions": [
+          "Một bản hợp đồng thể hiện nhiều nơi dùng mà không tăng số object lưu.",
+          "Quan hệ sang hồ sơ ngoài quyền không lộ node, edge, tổng số hoặc metadata bị cấm."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-053",
+      "phase": "P4",
+      "name": "Hiệu lực thay thế và cảnh báo nơi dùng",
+      "dependencies": [
+        "feat-035",
+        "feat-052",
+        "feat-018"
+      ],
+      "source_refs": [
+        "DMS-04",
+        "CON-01",
+        "DOS-03"
+      ],
+      "description": "Áp dụng phụ lục, ngày hiệu lực, hủy/thay thế và cảnh báo hồ sơ đang dùng tài liệu hết hạn; giữ quan hệ phiên bản và yêu cầu đánh giá lại khi cần.",
+      "planned_paths": [
+        "apps/api/src/modules/documents/lifecycle/",
+        "apps/web/src/features/document-impact/"
+      ],
+      "acceptance_criteria": [
+        "Bản ký cũ giữ nguyên và nơi tham chiếu thấy cảnh báo đúng phạm vi.",
+        "Việc đổi bản áp dụng có ngày hiệu lực, căn cứ và người chấp thuận; snapshot đã chốt giữ bản lịch sử."
+      ],
+      "estimate_days": [
+        1.5,
+        3
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-05"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-053",
+        "assertions": [
+          "Bản ký cũ giữ nguyên và nơi tham chiếu thấy cảnh báo đúng phạm vi.",
+          "Việc đổi bản áp dụng có ngày hiệu lực, căn cứ và người chấp thuận; snapshot đã chốt giữ bản lịch sử."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-054",
+      "phase": "P4",
+      "name": "Hạn lưu legal hold và tiêu hủy có kiểm soát",
+      "dependencies": [
+        "feat-014",
+        "feat-011",
+        "feat-033"
+      ],
+      "source_refs": [
+        "DMS-07",
+        "NFR-05",
+        "DESIGN-04-2"
+      ],
+      "description": "Cấu hình retention theo loại, giữ để kiểm tra/tranh chấp, đề nghị tiêu hủy và phê duyệt. Thử Object Lock theo version nếu hạ tầng/chính sách yêu cầu WORM.",
+      "planned_paths": [
+        "apps/api/src/modules/retention/",
+        "infra/storage/",
+        "docs/runbooks/retention/"
+      ],
+      "acceptance_criteria": [
+        "Legal hold chặn tiêu hủy dù hết hạn; thẩm quyền gỡ hold và tiêu hủy tách rõ.",
+        "Nếu chọn WORM, test sandbox chứng minh version khóa không bị xóa/ghi đè; không tự đặt 10 năm hay bật khóa không đảo ngược trên production."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-05",
+        "QD-06"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-054",
+        "assertions": [
+          "Legal hold chặn tiêu hủy dù hết hạn; thẩm quyền gỡ hold và tiêu hủy tách rõ.",
+          "Nếu chọn WORM, test sandbox chứng minh version khóa không bị xóa/ghi đè; không tự đặt 10 năm hay bật khóa không đảo ngược trên production."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-055",
+      "phase": "P4",
+      "name": "Khảo sát dữ liệu cũ và chạy thử chuyển đổi",
+      "dependencies": [
+        "feat-013",
+        "feat-016",
+        "feat-050"
+      ],
+      "source_refs": [
+        "DMS-08"
+      ],
+      "description": "Lập inventory dữ liệu nguồn được cấp, profile metadata/trùng/lỗi và bản đồ ánh xạ; chạy dry run trên một lô mẫu và dự toán khối lượng chuyển đổi.",
+      "planned_paths": [
+        "tools/migration/",
+        "docs/migration/"
+      ],
+      "acceptance_criteria": [
+        "Mỗi nguồn có số tệp, dung lượng, quyền đọc, trường thiếu và chủ xử lý.",
+        "Dry run xuất báo cáo nhận/lỗi/trùng mà không xóa hoặc sửa nguồn; có quy tắc xử lý bản không đủ metadata."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-05",
+        "QD-06"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-055",
+        "assertions": [
+          "Mỗi nguồn có số tệp, dung lượng, quyền đọc, trường thiếu và chủ xử lý.",
+          "Dry run xuất báo cáo nhận/lỗi/trùng mà không xóa hoặc sửa nguồn; có quy tắc xử lý bản không đủ metadata."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-056",
+      "phase": "P4",
+      "name": "Nhập dữ liệu theo lô và kiểm kê",
+      "dependencies": [
+        "feat-055",
+        "feat-039",
+        "feat-054"
+      ],
+      "source_refs": [
+        "DMS-08",
+        "UAT-05"
+      ],
+      "description": "Xây batch staging, mapping, checkpoint, import idempotent, quarantine lỗi và biên bản đối chiếu từng đợt; quản lý quyền sau nhập.",
+      "planned_paths": [
+        "tools/migration/",
+        "apps/api/src/modules/migration/",
+        "apps/web/src/features/migration-operations/"
+      ],
+      "acceptance_criteria": [
+        "Chạy lại lô bị gián đoạn không nhân bản; tổng nguồn bằng nhập thành công cộng lỗi/trùng/loại trừ theo quy tắc.",
+        "Kiểm hash và lấy mẫu quyền/liên kết; không ghi đè tài liệu đã ký hoặc phá legal hold."
+      ],
+      "estimate_days": [
+        3,
+        5
+      ],
+      "decision_gates": [
+        "QD-05",
+        "QD-06"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-056",
+        "assertions": [
+          "Chạy lại lô bị gián đoạn không nhân bản; tổng nguồn bằng nhập thành công cộng lỗi/trùng/loại trừ theo quy tắc.",
+          "Kiểm hash và lấy mẫu quyền/liên kết; không ghi đè tài liệu đã ký hoặc phá legal hold."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-057",
+      "phase": "P4",
+      "name": "Quyền kiểm toán theo phạm vi và thời hạn",
+      "dependencies": [
+        "feat-015",
+        "feat-047",
+        "feat-033"
+      ],
+      "source_refs": [
+        "DOS-02",
+        "FIN-09",
+        "AUTH-01"
+      ],
+      "description": "Cấp AccessGrant cho người/nhóm kiểm tra theo tập hồ sơ, hành động và hạn; dùng mã tra cứu cùng xác thực/quyền, hỗ trợ thu hồi và audit.",
+      "planned_paths": [
+        "apps/api/src/modules/access-grants/",
+        "apps/web/src/features/audit-room/"
+      ],
+      "acceptance_criteria": [
+        "Mã tra cứu đơn lẻ không mở tài liệu ngoài quyền; hết hạn hoặc thu hồi chặn mở/tải mới.",
+        "Kiểm toán viên chỉ thấy đúng snapshot và phạm vi; xem/tải/xuất có log."
+      ],
+      "estimate_days": [
+        2,
+        3.5
+      ],
+      "decision_gates": [
+        "QD-05"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-057",
+        "assertions": [
+          "Mã tra cứu đơn lẻ không mở tài liệu ngoài quyền; hết hạn hoặc thu hồi chặn mở/tải mới.",
+          "Kiểm toán viên chỉ thấy đúng snapshot và phạm vi; xem/tải/xuất có log."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-058",
+      "phase": "P4",
+      "name": "Bàn giao toàn bộ dữ liệu và nạp lại mẫu",
+      "dependencies": [
+        "feat-047",
+        "feat-052",
+        "feat-054"
+      ],
+      "source_refs": [
+        "DMS-09",
+        "NFR-05"
+      ],
+      "description": "Xuất tài liệu, version, metadata, liên kết, quyền được phép và audit theo schema có tài liệu; tạo công cụ nạp lại một tập mẫu để kiểm tra khả năng chuyển nhà cung cấp.",
+      "planned_paths": [
+        "tools/data-portability/",
+        "docs/data-export/"
+      ],
+      "acceptance_criteria": [
+        "Gói xuất có schema/version, manifest, kiểm hash và chính sách bảo vệ dữ liệu.",
+        "Nạp lại mẫu phục hồi quan hệ hồ sơ-tài liệu-version; ghi dung lượng/thời gian và giới hạn bàn giao cần thỏa thuận."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-05",
+        "QD-06"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-058",
+        "assertions": [
+          "Gói xuất có schema/version, manifest, kiểm hash và chính sách bảo vệ dữ liệu.",
+          "Nạp lại mẫu phục hồi quan hệ hồ sơ-tài liệu-version; ghi dung lượng/thời gian và giới hạn bàn giao cần thỏa thuận."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-059",
+      "phase": "P4",
+      "name": "Nghiệm thu kho dữ liệu và kiểm toán",
+      "dependencies": [
+        "feat-050",
+        "feat-051",
+        "feat-053",
+        "feat-056",
+        "feat-057",
+        "feat-058"
+      ],
+      "source_refs": [
+        "UAT-03",
+        "UAT-05"
+      ],
+      "description": "Chạy các tình huống hợp đồng nhiều nơi dùng, thay phụ lục, tìm kiếm ngoài quyền, nhập dữ liệu thiếu/trùng, sửa OCR, giữ/khóa và cấp quyền kiểm toán.",
+      "planned_paths": [
+        "tests/e2e/dms/",
+        "docs/uat/dms/"
+      ],
+      "acceptance_criteria": [
+        "UAT-03/UAT-05 có bằng chứng dữ liệu trước/sau, báo cáo nhập và kiểm quyền âm.",
+        "Người quản lý kho xác nhận kết quả kiểm kê và bên kiểm tra mở được đúng bộ hồ sơ trong hạn."
+      ],
+      "estimate_days": [
+        2,
+        3
+      ],
+      "decision_gates": [
+        "QD-05",
+        "QD-06"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-059",
+        "assertions": [
+          "UAT-03/UAT-05 có bằng chứng dữ liệu trước/sau, báo cáo nhập và kiểm quyền âm.",
+          "Người quản lý kho xác nhận kết quả kiểm kê và bên kiểm tra mở được đúng bộ hồ sơ trong hạn."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-060",
+      "phase": "P5",
+      "name": "Ứng dụng Flutter và nền định danh",
+      "dependencies": [
+        "feat-008",
+        "feat-026",
+        "feat-006"
+      ],
+      "source_refs": [
+        "MOB-01",
+        "MOB-05",
+        "DESIGN-04-3"
+      ],
+      "description": "Tạo app iOS/Android, token giao diện tương đương web, API client sinh từ OpenAPI, secure session và cơ chế build theo môi trường.",
+      "planned_paths": [
+        "apps/mobile/",
+        "packages/api-contracts/",
+        "docs/mobile/"
+      ],
+      "acceptance_criteria": [
+        "Android/iOS chạy trên thiết bị thử với đăng nhập sandbox và chọn vai trò/pháp nhân.",
+        "Token không nằm trong log hoặc cấu hình app; CI phân biệt phần kiểm tra chạy được trên Windows và phần cần macOS."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-01",
+        "QD-04",
+        "QD-06"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-060",
+        "assertions": [
+          "Android/iOS chạy trên thiết bị thử với đăng nhập sandbox và chọn vai trò/pháp nhân.",
+          "Token không nằm trong log hoặc cấu hình app; CI phân biệt phần kiểm tra chạy được trên Windows và phần cần macOS."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-061",
+      "phase": "P5",
+      "name": "Inbox mobile theo mức tích hợp",
+      "dependencies": [
+        "feat-060",
+        "feat-018"
+      ],
+      "source_refs": [
+        "MOB-01"
+      ],
+      "description": "Hiển thị yêu cầu E Office và nguồn ngoài với ba capability: thông báo, xem/chuyển nguồn, quyết định và đồng bộ hai chiều; lọc theo vai trò, pháp nhân, hạn và số tiền.",
+      "planned_paths": [
+        "apps/mobile/lib/features/inbox/",
+        "apps/api/src/modules/unified-inbox/"
+      ],
+      "acceptance_criteria": [
+        "Mỗi mục ghi rõ chủ luồng và khả năng duyệt; nguồn chưa hỗ trợ không có nút duyệt giả.",
+        "Đổi vai trò xóa dữ liệu hiển thị sai phạm vi và tải lại bằng quyền mới."
+      ],
+      "estimate_days": [
+        1.5,
+        3
+      ],
+      "decision_gates": [
+        "QD-04"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-061",
+        "assertions": [
+          "Mỗi mục ghi rõ chủ luồng và khả năng duyệt; nguồn chưa hỗ trợ không có nút duyệt giả.",
+          "Đổi vai trò xóa dữ liệu hiển thị sai phạm vi và tải lại bằng quyền mới."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-062",
+      "phase": "P5",
+      "name": "Xem hồ sơ và quyết định trên mobile",
+      "dependencies": [
+        "feat-061",
+        "feat-027",
+        "feat-044"
+      ],
+      "source_refs": [
+        "MOB-02",
+        "MOB-04"
+      ],
+      "description": "Chi tiết hồ sơ, viewer, cảnh báo, ý kiến và diff; gửi quyết định với snapshot ID, expected revision và operation ID.",
+      "planned_paths": [
+        "apps/mobile/lib/features/approvals/",
+        "apps/mobile/lib/features/documents/"
+      ],
+      "acceptance_criteria": [
+        "Bản xem và bản được duyệt trùng version/hash; số liệu ngân sách chỉ hiện khi có nguồn hợp lệ.",
+        "Thay hóa đơn hoặc thụ hưởng làm request cũ thất bại và buộc xem bản mới."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-062",
+        "assertions": [
+          "Bản xem và bản được duyệt trùng version/hash; số liệu ngân sách chỉ hiện khi có nguồn hợp lệ.",
+          "Thay hóa đơn hoặc thụ hưởng làm request cũ thất bại và buộc xem bản mới."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-063",
+      "phase": "P5",
+      "name": "Mất mạng gửi lại và đối soát quyết định",
+      "dependencies": [
+        "feat-062",
+        "feat-017"
+      ],
+      "source_refs": [
+        "MOB-03",
+        "MOB-04",
+        "MOB-05"
+      ],
+      "description": "Quản lý trạng thái chưa gửi/đang gửi/chờ xác nhận/đã xác nhận/lỗi và tra operation sau timeout. Mỗi quyết định cần server kiểm quyền, phiên và bản trình.",
+      "planned_paths": [
+        "apps/mobile/lib/features/approval-sync/",
+        "tests/mobile/network/"
+      ],
+      "acceptance_criteria": [
+        "Ngắt mạng trước/sau commit rồi gửi lại không tạo hai quyết định; kết quả chưa rõ không hiển thị thành công.",
+        "Không ký/duyệt khi offline; server từ chối phiên bị thu hồi hoặc yêu cầu đã thay thế."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-04"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-063",
+        "assertions": [
+          "Ngắt mạng trước/sau commit rồi gửi lại không tạo hai quyết định; kết quả chưa rõ không hiển thị thành công.",
+          "Không ký/duyệt khi offline; server từ chối phiên bị thu hồi hoặc yêu cầu đã thay thế."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-064",
+      "phase": "P5",
+      "name": "Ký số mobile qua luồng xác thực thật",
+      "dependencies": [
+        "feat-032",
+        "feat-062",
+        "feat-063"
+      ],
+      "source_refs": [
+        "SIG-02",
+        "MOB-02",
+        "DESIGN-04-3"
+      ],
+      "description": "Tích hợp UX ký của CA/HSM được chọn, step-up theo chính sách và theo dõi operation; hiển thị artifact/kết quả xác minh sau khi nguồn xác nhận.",
+      "planned_paths": [
+        "apps/mobile/lib/features/signing/",
+        "docs/mobile/signing/"
+      ],
+      "acceptance_criteria": [
+        "Thiết bị thật hoàn thành ký sandbox với đúng hash/phiên bản và căn cứ ủy quyền.",
+        "Hủy/timeout/từ chối/đổi tài liệu không hiện con dấu hoàn tất; sinh trắc học đơn lẻ không thay bằng chứng CA."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-04"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-064",
+        "assertions": [
+          "Thiết bị thật hoàn thành ký sandbox với đúng hash/phiên bản và căn cứ ủy quyền.",
+          "Hủy/timeout/từ chối/đổi tài liệu không hiện con dấu hoàn tất; sinh trắc học đơn lẻ không thay bằng chứng CA."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-065",
+      "phase": "P5",
+      "name": "Cache đọc được phép và quản lý dữ liệu thiết bị",
+      "dependencies": [
+        "feat-060",
+        "feat-062"
+      ],
+      "source_refs": [
+        "MOB-05",
+        "NFR-01"
+      ],
+      "description": "Cấu hình loại dữ liệu được cache, mã hóa, TTL, xóa khi logout/đổi vai trò và nhãn dữ liệu cũ. Hồ sơ nhạy cảm có thể buộc online hoàn toàn.",
+      "planned_paths": [
+        "apps/mobile/lib/core/storage/",
+        "apps/mobile/lib/features/offline-reading/"
+      ],
+      "acceptance_criteria": [
+        "Chỉ dữ liệu được phép có cache; hết TTL hoặc đổi vai trò không còn mở được bằng app.",
+        "Chính sách nêu đúng giới hạn thu hồi khi thiết bị mất kết nối; không cam kết xóa tức thì dữ liệu đã tải offline."
+      ],
+      "estimate_days": [
+        1.5,
+        3
+      ],
+      "decision_gates": [
+        "QD-05",
+        "QD-06"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-065",
+        "assertions": [
+          "Chỉ dữ liệu được phép có cache; hết TTL hoặc đổi vai trò không còn mở được bằng app.",
+          "Chính sách nêu đúng giới hạn thu hồi khi thiết bị mất kết nối; không cam kết xóa tức thì dữ liệu đã tải offline."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-066",
+      "phase": "P5",
+      "name": "Push thiết bị và nghiệm thu mobile",
+      "dependencies": [
+        "feat-061",
+        "feat-063",
+        "feat-064",
+        "feat-065"
+      ],
+      "source_refs": [
+        "MOB-01",
+        "MOB-05",
+        "UAT-04"
+      ],
+      "description": "Quản lý thiết bị/push token, thu hồi phiên, deep link có kiểm quyền và kiểm thử iOS/Android. Hoàn tất UAT-04 cùng vai trò kiêm nhiệm, ủy quyền và sự cố mạng.",
+      "planned_paths": [
+        "apps/mobile/",
+        "apps/api/src/modules/devices/",
+        "tests/mobile/",
+        "docs/uat/mobile/"
+      ],
+      "acceptance_criteria": [
+        "Push không lộ nội dung nhạy cảm trên màn hình khóa; thiết bị bị thu hồi không dùng API với phiên cũ.",
+        "UAT-04 có kiểm thử thiết bị thật, retry, thay dữ liệu và hết hạn ủy quyền; build/phân phối app có hướng dẫn."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-04",
+        "QD-05",
+        "QD-06"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-066",
+        "assertions": [
+          "Push không lộ nội dung nhạy cảm trên màn hình khóa; thiết bị bị thu hồi không dùng API với phiên cũ.",
+          "UAT-04 có kiểm thử thiết bị thật, retry, thay dữ liệu và hết hạn ủy quyền; build/phân phối app có hướng dẫn."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-067",
+      "phase": "P6",
+      "name": "Văn bản đến và giao xử lý",
+      "dependencies": [
+        "feat-014",
+        "feat-024",
+        "feat-029"
+      ],
+      "source_refs": [
+        "DOC-01"
+      ],
+      "description": "Đăng ký số đến, nguồn, pháp nhân, độ mật, hạn, chủ trì và phối hợp; liên kết hồ sơ/công việc, phản hồi và tiến độ.",
+      "planned_paths": [
+        "apps/api/src/modules/correspondence/incoming/",
+        "apps/web/src/features/incoming-documents/"
+      ],
+      "acceptance_criteria": [
+        "Một công văn đến được phân công, theo dõi hạn và lưu câu trả lời liên quan.",
+        "Số đến/pháp nhân và quyền tài liệu được kiểm tra; người phối hợp không được mở tài liệu ngoài quyền."
+      ],
+      "estimate_days": [
+        2,
+        3.5
+      ],
+      "decision_gates": [
+        "QD-01",
+        "QD-02"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-067",
+        "assertions": [
+          "Một công văn đến được phân công, theo dõi hạn và lưu câu trả lời liên quan.",
+          "Số đến/pháp nhân và quyền tài liệu được kiểm tra; người phối hợp không được mở tài liệu ngoài quyền."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-068",
+      "phase": "P6",
+      "name": "Văn bản đi ký và cấp số",
+      "dependencies": [
+        "feat-032",
+        "feat-033",
+        "feat-067"
+      ],
+      "source_refs": [
+        "DOC-02",
+        "SIG-01",
+        "SIG-02"
+      ],
+      "description": "Soạn/rà soát/trình ký/phát hành, cấp số theo sổ/pháp nhân, quản lý nơi nhận và xác nhận gửi. Chốt bước cấp số trước/sau ký theo loại văn bản.",
+      "planned_paths": [
+        "apps/api/src/modules/correspondence/outgoing/",
+        "apps/web/src/features/outgoing-documents/"
+      ],
+      "acceptance_criteria": [
+        "Hai thao tác đồng thời không trùng số; số hủy không tái dùng nếu chính sách cấm.",
+        "Bản phát hành có số và đúng bản ký; không ghi thêm số trực tiếp vào byte đã ký làm hỏng chữ ký."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-04"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-068",
+        "assertions": [
+          "Hai thao tác đồng thời không trùng số; số hủy không tái dùng nếu chính sách cấm.",
+          "Bản phát hành có số và đúng bản ký; không ghi thêm số trực tiếp vào byte đã ký làm hỏng chữ ký."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-069",
+      "phase": "P6",
+      "name": "Công việc phối hợp và bằng chứng",
+      "dependencies": [
+        "feat-024",
+        "feat-018",
+        "feat-009"
+      ],
+      "source_refs": [
+        "TSK-01",
+        "DOC-01"
+      ],
+      "description": "Quản lý người giao, chịu trách nhiệm, phối hợp, hạn, ưu tiên, kết quả và bằng chứng; liên kết văn bản, hồ sơ hoặc dự án.",
+      "planned_paths": [
+        "apps/api/src/modules/work-management/",
+        "apps/web/src/features/tasks/"
+      ],
+      "acceptance_criteria": [
+        "Quá hạn hiện đúng người liên quan và thống kê theo đơn vị.",
+        "Kết quả và thay đổi người/hạn có lịch sử; ApprovalTask và công việc người dùng không bị nhầm một thực thể."
+      ],
+      "estimate_days": [
+        2,
+        3.5
+      ],
+      "decision_gates": [
+        "QD-01",
+        "QD-07"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-069",
+        "assertions": [
+          "Quá hạn hiện đúng người liên quan và thống kê theo đơn vị.",
+          "Kết quả và thay đổi người/hạn có lịch sử; ApprovalTask và công việc người dùng không bị nhầm một thực thể."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-070",
+      "phase": "P6",
+      "name": "Chỉ tiêu công việc có quy tắc và truy nguồn",
+      "dependencies": [
+        "feat-069"
+      ],
+      "source_refs": [
+        "TSK-02"
+      ],
+      "description": "Cấu hình công thức hoàn thành, quá hạn, chất lượng và quy trình điều chỉnh điểm; tổng hợp tới đơn vị theo quyền.",
+      "planned_paths": [
+        "apps/api/src/modules/work-metrics/",
+        "apps/web/src/features/task-reports/"
+      ],
+      "acceptance_criteria": [
+        "Mỗi số liệu truy được công việc nguồn và version công thức.",
+        "Điều chỉnh điểm có lý do/người duyệt; không có chức năng tính lương khi chưa được đưa vào phạm vi."
+      ],
+      "estimate_days": [
+        1.5,
+        3
+      ],
+      "decision_gates": [
+        "QD-07"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-070",
+        "assertions": [
+          "Mỗi số liệu truy được công việc nguồn và version công thức.",
+          "Điều chỉnh điểm có lý do/người duyệt; không có chức năng tính lương khi chưa được đưa vào phạm vi."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-071",
+      "phase": "P6",
+      "name": "Dự án giai đoạn và tiến độ",
+      "dependencies": [
+        "feat-069",
+        "feat-014"
+      ],
+      "source_refs": [
+        "PRJ-01"
+      ],
+      "description": "Quản lý thành phần dự án, giai đoạn, mốc, người phụ trách, tài liệu và cách tính phần trăm có cấu hình; phân biệt tiến độ kế hoạch/thực tế.",
+      "planned_paths": [
+        "apps/api/src/modules/projects/",
+        "apps/web/src/features/projects/"
+      ],
+      "acceptance_criteria": [
+        "Đổi tiến độ công việc cập nhật giai đoạn/dự án đúng công thức đã chốt.",
+        "Mốc và quyết định/tài liệu truy được; công việc ngoài quyền không lộ qua báo cáo."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-07"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-071",
+        "assertions": [
+          "Đổi tiến độ công việc cập nhật giai đoạn/dự án đúng công thức đã chốt.",
+          "Mốc và quyết định/tài liệu truy được; công việc ngoài quyền không lộ qua báo cáo."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-072",
+      "phase": "P6",
+      "name": "Đặt xe phòng họp và chống xung đột",
+      "dependencies": [
+        "feat-022",
+        "feat-009",
+        "feat-018"
+      ],
+      "source_refs": [
+        "UTL-01"
+      ],
+      "description": "Quản lý nguồn lực, lịch, đăng ký, duyệt, hủy và thời gian đệm theo chính sách; chống đặt trùng trong transaction và theo trạng thái được xác nhận.",
+      "planned_paths": [
+        "apps/api/src/modules/resource-booking/",
+        "apps/web/src/features/bookings/"
+      ],
+      "acceptance_criteria": [
+        "Hai yêu cầu đồng thời cùng phòng/xe và khoảng giờ chỉ một yêu cầu được xác nhận.",
+        "Hủy giải phóng đúng lịch; timezone được thống nhất và người quản lý thấy xung đột đúng phạm vi."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-07"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-072",
+        "assertions": [
+          "Hai yêu cầu đồng thời cùng phòng/xe và khoảng giờ chỉ một yêu cầu được xác nhận.",
+          "Hủy giải phóng đúng lịch; timezone được thống nhất và người quản lý thấy xung đột đúng phạm vi."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-073",
+      "phase": "P6",
+      "name": "Công tác và nghiệm thu phân hệ mở rộng",
+      "dependencies": [
+        "feat-067",
+        "feat-068",
+        "feat-070",
+        "feat-071",
+        "feat-072",
+        "feat-036",
+        "feat-042"
+      ],
+      "source_refs": [
+        "UTL-01",
+        "UAT-06"
+      ],
+      "description": "Liên kết công tác, đề xuất, tạm ứng và quyết toán theo rule; chạy UAT-06 cho văn bản, công việc, dự án và đặt phòng xung đột.",
+      "planned_paths": [
+        "apps/api/src/modules/business-travel/",
+        "apps/web/src/features/business-travel/",
+        "tests/e2e/administration/",
+        "docs/uat/administration/"
+      ],
+      "acceptance_criteria": [
+        "Từ chuyến công tác truy được tạm ứng/quyết toán và không tạo giao dịch tiền trùng.",
+        "UAT-06 xác nhận đủ công văn đến/đi, đúng tư cách ký, cách tính tiến độ và chặn đặt trùng."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-02",
+        "QD-07"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-073",
+        "assertions": [
+          "Từ chuyến công tác truy được tạm ứng/quyết toán và không tạo giao dịch tiền trùng.",
+          "UAT-06 xác nhận đủ công văn đến/đi, đúng tư cách ký, cách tính tiến độ và chặn đặt trùng."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-074",
+      "phase": "P7",
+      "name": "Quyết định hai chiều với nguồn ngoài được chọn",
+      "dependencies": [
+        "feat-061",
+        "feat-063",
+        "feat-017",
+        "feat-046"
+      ],
+      "source_refs": [
+        "INT-01",
+        "INT-02",
+        "INT-03",
+        "INT-04",
+        "MOB-01"
+      ],
+      "description": "Triển khai capability duyệt hai chiều chỉ cho các hệ thống có API/quyền được xác nhận; kiểm version nguồn, ack, callback, idempotency và đối soát.",
+      "planned_paths": [
+        "apps/api/src/adapters/external-approvals/",
+        "docs/integrations/",
+        "tests/contracts/"
+      ],
+      "acceptance_criteria": [
+        "Mỗi nguồn được chọn có bản đồ trường, chủ luồng, đầu mối và test lỗi cho cả hai chiều.",
+        "Kết quả chưa được nguồn xác nhận không hiện hoàn tất; nguồn không hỗ trợ vẫn giữ mức thông báo/chuyển tiếp đã thỏa thuận."
+      ],
+      "estimate_days": [
+        3,
+        6
+      ],
+      "decision_gates": [
+        "QD-04"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-074",
+        "assertions": [
+          "Mỗi nguồn được chọn có bản đồ trường, chủ luồng, đầu mối và test lỗi cho cả hai chiều.",
+          "Kết quả chưa được nguồn xác nhận không hiện hoàn tất; nguồn không hỗ trợ vẫn giữ mức thông báo/chuyển tiếp đã thỏa thuận."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-075",
+      "phase": "P7",
+      "name": "Giám sát vận hành và cảnh báo",
+      "dependencies": [
+        "feat-017",
+        "feat-046",
+        "feat-051",
+        "feat-054"
+      ],
+      "source_refs": [
+        "NFR-04",
+        "AUD-01"
+      ],
+      "description": "Hoàn thiện dashboard DB/storage, queue, tích hợp, OCR/index và backup; correlation ID từ client tới adapter; cảnh báo có người phụ trách và runbook.",
+      "planned_paths": [
+        "infra/observability/",
+        "apps/api/src/telemetry/",
+        "apps/worker/src/telemetry/",
+        "docs/runbooks/"
+      ],
+      "acceptance_criteria": [
+        "Tạo lỗi Bravo, hết quota, lỗi chỉ mục và backup thất bại sinh cảnh báo có thể truy xử lý.",
+        "Log/trace/metric không chứa bí mật hoặc nội dung tài liệu ngoài chính sách; cảnh báo có ngưỡng và owner."
+      ],
+      "estimate_days": [
+        2,
+        3.5
+      ],
+      "decision_gates": [
+        "QD-06"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-075",
+        "assertions": [
+          "Tạo lỗi Bravo, hết quota, lỗi chỉ mục và backup thất bại sinh cảnh báo có thể truy xử lý.",
+          "Log/trace/metric không chứa bí mật hoặc nội dung tài liệu ngoài chính sách; cảnh báo có ngưỡng và owner."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-076",
+      "phase": "P7",
+      "name": "Kiểm thử bảo mật xuyên suốt",
+      "dependencies": [
+        "feat-059",
+        "feat-066",
+        "feat-073",
+        "feat-074",
+        "feat-075"
+      ],
+      "source_refs": [
+        "AUTH-01",
+        "AUTH-02",
+        "NFR-01",
+        "NFR-02",
+        "MOB-05"
+      ],
+      "description": "Kiểm tra ma trận quyền âm, IDOR, session, upload/XML, URL tải, export/job, search/count, cache và API nguồn; rà dependency, cấu hình và quản lý bí mật.",
+      "planned_paths": [
+        "tests/security/",
+        "docs/security/",
+        "infra/"
+      ],
+      "acceptance_criteria": [
+        "Tình huống truy chéo pháp nhân, quyền bị thu hồi và worker mất context đều bị chặn mà không lộ metadata.",
+        "Lỗi nghiêm trọng được sửa và kiểm lại; báo cáo ghi phạm vi/điểm chưa kiểm để người chịu trách nhiệm quyết định phát hành."
+      ],
+      "estimate_days": [
+        3,
+        5
+      ],
+      "decision_gates": [
+        "QD-05",
+        "QD-06"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-076",
+        "assertions": [
+          "Tình huống truy chéo pháp nhân, quyền bị thu hồi và worker mất context đều bị chặn mà không lộ metadata.",
+          "Lỗi nghiêm trọng được sửa và kiểm lại; báo cáo ghi phạm vi/điểm chưa kiểm để người chịu trách nhiệm quyết định phát hành."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-077",
+      "phase": "P7",
+      "name": "Đo hiệu năng dung lượng và khôi phục tải",
+      "dependencies": [
+        "feat-075",
+        "feat-076"
+      ],
+      "source_refs": [
+        "NFR-03"
+      ],
+      "description": "Tạo workload theo người dùng, dữ liệu cũ, tăng trưởng, tệp và lịch tích hợp đã chốt; đo p95, tỷ lệ lỗi, throughput và backlog, tối ưu theo nút thắt thực tế.",
+      "planned_paths": [
+        "tests/performance/",
+        "docs/performance/"
+      ],
+      "acceptance_criteria": [
+        "Biên bản ghi hạ tầng, dữ liệu, concurrency, ngưỡng đã duyệt và kết quả, không lấy tốc độ showcase làm SLA.",
+        "Thử tải kéo dài và phục hồi queue sau sự cố; không tối ưu bằng cách bỏ kiểm quyền hoặc toàn vẹn."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-06"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-077",
+        "assertions": [
+          "Biên bản ghi hạ tầng, dữ liệu, concurrency, ngưỡng đã duyệt và kết quả, không lấy tốc độ showcase làm SLA.",
+          "Thử tải kéo dài và phục hồi queue sau sự cố; không tối ưu bằng cách bỏ kiểm quyền hoặc toàn vẹn."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-078",
+      "phase": "P7",
+      "name": "Sao lưu khôi phục và diễn tập sự cố",
+      "dependencies": [
+        "feat-054",
+        "feat-058",
+        "feat-075"
+      ],
+      "source_refs": [
+        "NFR-01",
+        "NFR-03",
+        "NFR-04",
+        "NFR-05"
+      ],
+      "description": "Sao lưu DB, object/version, cấu hình, khóa cần thiết và tài liệu phục hồi; diễn tập khôi phục môi trường tách biệt rồi xây lại chỉ mục và đối soát tích hợp.",
+      "planned_paths": [
+        "infra/backup/",
+        "docs/runbooks/disaster-recovery/",
+        "tests/recovery/"
+      ],
+      "acceptance_criteria": [
+        "Khôi phục được bộ hồ sơ mẫu với hash, version, liên kết, quyết định và quyền; ghi RPO/RTO đo được.",
+        "Có cách phục hồi khóa/mã hóa được kiểm soát và xử lý sự kiện đang gửi dở mà không tạo quyết định/bút toán đôi."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-05",
+        "QD-06"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-078",
+        "assertions": [
+          "Khôi phục được bộ hồ sơ mẫu với hash, version, liên kết, quyết định và quyền; ghi RPO/RTO đo được.",
+          "Có cách phục hồi khóa/mã hóa được kiểm soát và xử lý sự kiện đang gửi dở mà không tạo quyết định/bút toán đôi."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-079",
+      "phase": "P7",
+      "name": "Diễn tập chuyển hệ thống và kế hoạch quay lui",
+      "dependencies": [
+        "feat-056",
+        "feat-077",
+        "feat-078",
+        "feat-048"
+      ],
+      "source_refs": [
+        "DMS-08",
+        "INT-04",
+        "NFR-04"
+      ],
+      "description": "Chạy migration dress rehearsal, chốt cửa sổ dữ liệu, delta import, đối chiếu, cờ bật tích hợp, hỗ trợ pilot và rollback ứng dụng theo migration tương thích.",
+      "planned_paths": [
+        "docs/release/",
+        "infra/deploy/",
+        "tools/migration/"
+      ],
+      "acceptance_criteria": [
+        "Có checklist go/no-go với chủ ký nhận, báo cáo kiểm kê và ngưỡng dừng rõ ràng.",
+        "Rollback giữ được tài liệu đã ký và giao dịch đã xác nhận tại nguồn; không hứa đảo ngược tự động tác động ngoài hệ thống."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-01",
+        "QD-03",
+        "QD-04",
+        "QD-05",
+        "QD-06"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-079",
+        "assertions": [
+          "Có checklist go/no-go với chủ ký nhận, báo cáo kiểm kê và ngưỡng dừng rõ ràng.",
+          "Rollback giữ được tài liệu đã ký và giao dịch đã xác nhận tại nguồn; không hứa đảo ngược tự động tác động ngoài hệ thống."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    },
+    {
+      "id": "feat-080",
+      "phase": "P7",
+      "name": "Nghiệm thu cuối và bàn giao vận hành",
+      "dependencies": [
+        "feat-079",
+        "feat-076",
+        "feat-077",
+        "feat-078",
+        "feat-059",
+        "feat-066",
+        "feat-073",
+        "feat-074",
+        "feat-049",
+        "feat-034"
+      ],
+      "source_refs": [
+        "UAT-01",
+        "UAT-02",
+        "UAT-03",
+        "UAT-04",
+        "UAT-05",
+        "UAT-06",
+        "NFR-01",
+        "NFR-02",
+        "NFR-03",
+        "NFR-04",
+        "NFR-05"
+      ],
+      "description": "Đối chiếu toàn bộ 54 yêu cầu, sáu UAT và các QD thành baseline; bàn giao hướng dẫn, đào tạo, cấu hình, quyền quản trị, export, hỗ trợ và lịch kiểm tra vận hành.",
+      "planned_paths": [
+        "docs/uat/",
+        "docs/training/",
+        "docs/operations/",
+        "README.md"
+      ],
+      "acceptance_criteria": [
+        "Mọi feature trong phạm vi được duyệt có bằng chứng thật, commit và người nghiệm thu; mục cắt giảm được xử lý bằng thay đổi phạm vi có xác nhận.",
+        "Chủ vận hành tiếp nhận và thực hành được backup/restore, xử lý lỗi tích hợp, thu hồi quyền và xuất bộ dữ liệu; go-live theo quyết định phát hành riêng."
+      ],
+      "estimate_days": [
+        2,
+        4
+      ],
+      "decision_gates": [
+        "QD-01",
+        "QD-02",
+        "QD-03",
+        "QD-04",
+        "QD-05",
+        "QD-06",
+        "QD-07"
+      ],
+      "status": "not-started",
+      "evidence": "",
+      "commit": "",
+      "verification": {
+        "kind": "planned",
+        "command": "pnpm verify:feature --id feat-080",
+        "assertions": [
+          "Mọi feature trong phạm vi được duyệt có bằng chứng thật, commit và người nghiệm thu; mục cắt giảm được xử lý bằng thay đổi phạm vi có xác nhận.",
+          "Chủ vận hành tiếp nhận và thực hành được backup/restore, xử lý lỗi tích hợp, thu hồi quyền và xuất bộ dữ liệu; go-live theo quyết định phát hành riêng."
+        ],
+        "note": "Lệnh và test tương ứng sẽ được hiện thực ở feat-004/feat-005 và trong feature liên quan; chưa chạy."
+      }
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Vinafco proposed implementation backlog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "plan_date", "baseline", "features"],
+  "properties": {
+    "version": {"type": "string"},
+    "plan_date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+    "baseline": {"type": "string", "enum": ["proposed", "approved"]},
+    "features": {"type": "array", "minItems": 1, "items": {"$ref": "#/definitions/feature"}}
+  },
+  "definitions": {
+    "nonemptyStrings": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "feature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "phase", "name", "description", "dependencies", "source_refs", "planned_paths", "acceptance_criteria", "estimate_days", "decision_gates", "status", "evidence", "commit", "verification"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^feat-[0-9]{3,}$"},
+        "phase": {"type": "string", "enum": ["P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7"]},
+        "name": {"type": "string", "minLength": 1},
+        "description": {"type": "string", "minLength": 1},
+        "dependencies": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^feat-[0-9]{3,}$"}},
+        "source_refs": {"$ref": "#/definitions/nonemptyStrings"},
+        "planned_paths": {"$ref": "#/definitions/nonemptyStrings"},
+        "acceptance_criteria": {"$ref": "#/definitions/nonemptyStrings"},
+        "estimate_days": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "number", "minimum": 0}},
+        "decision_gates": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^QD-0[1-7]$"}},
+        "status": {"type": "string", "enum": ["not-started", "in-progress", "blocked", "done"]},
+        "evidence": {"type": "string"},
+        "commit": {"type": "string"},
+        "verification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "command", "assertions", "note"],
+          "properties": {
+            "kind": {"type": "string", "enum": ["planned", "executed"]},
+            "command": {"type": "string", "minLength": 1},
+            "assertions": {"$ref": "#/definitions/nonemptyStrings"},
+            "note": {"type": "string"}
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "done"}}, "required": ["status"]},
+          "then": {"properties": {"evidence": {"minLength": 1}, "commit": {"minLength": 1}, "verification": {"properties": {"kind": {"const": "executed"}}}}}
+        }
+      ]
+    }
+  }
+}
