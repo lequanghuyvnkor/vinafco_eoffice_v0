@@ -1,0 +1,78 @@
+{
+  "datasetType": "synthetic-integration-fixture",
+  "datasetVersion": "1.0.0",
+  "isSimulation": true,
+  "simulationOnly": true,
+  "sourceSystem": "SIMULATED-BRAVO",
+  "records": [
+    {
+      "id": "BRV-DEMO-001",
+      "operationId": "op-demo-001",
+      "idempotencyKey": "demo:le-north:payment:001",
+      "event": "payment-request.submit",
+      "occurredAt": "2026-11-03T03:00:00Z",
+      "legalEntityId": "le-demo-north",
+      "documentRef": "PAY-DEMO-001",
+      "currency": "VND",
+      "amount": "12850000",
+      "expectedStatus": "simulated-acknowledged",
+      "simulatedSourceReference": "SIM-BRV-DOC-0001",
+      "expectedHandling": "Chỉ là ack giả. Hiện đã nhận mô phỏng; không chuyển thành posted hoặc paid."
+    },
+    {
+      "id": "BRV-DEMO-002",
+      "operationId": "op-demo-002",
+      "idempotencyKey": "demo:le-south:payment:002",
+      "event": "payment-request.submit",
+      "occurredAt": "2026-11-03T03:05:00Z",
+      "legalEntityId": "le-demo-south",
+      "documentRef": "PAY-DEMO-002",
+      "currency": "VND",
+      "amount": "9400000",
+      "expectedStatus": "simulated-unknown",
+      "simulatedSourceReference": null,
+      "expectedHandling": "Timeout không cho biết nguồn đã nhận hay chưa. Chặn gửi lại tự động; đưa vào đối soát."
+    },
+    {
+      "id": "BRV-DEMO-003",
+      "operationId": "op-demo-003",
+      "idempotencyKey": "demo:le-north:payment:001",
+      "event": "payment-request.submit",
+      "occurredAt": "2026-11-03T03:10:00Z",
+      "legalEntityId": "le-demo-north",
+      "documentRef": "PAY-DEMO-001",
+      "currency": "VND",
+      "amount": "12850000",
+      "expectedStatus": "simulated-duplicate",
+      "simulatedSourceReference": "SIM-BRV-DOC-0001",
+      "expectedHandling": "Cùng idempotency key và fingerprint: trả kết quả mô phỏng trước, không tạo tác dụng phụ lần hai."
+    },
+    {
+      "id": "BRV-DEMO-004",
+      "operationId": "op-demo-004",
+      "idempotencyKey": "demo:le-south:payment:004",
+      "event": "payment-request.submit",
+      "occurredAt": "2026-11-03T03:15:00Z",
+      "legalEntityId": "le-demo-south",
+      "documentRef": "PAY-DEMO-004",
+      "currency": "VND",
+      "amount": "0",
+      "expectedStatus": "simulated-rejected",
+      "simulatedErrorCode": "SIM_INVALID_AMOUNT",
+      "expectedHandling": "Hiện lỗi kiểm tra đầu vào; giữ dữ liệu và không đánh dấu nguồn đã nhận."
+    },
+    {
+      "id": "BRV-DEMO-005",
+      "operationId": "op-demo-005",
+      "event": "reconciliation.result",
+      "occurredAt": "2026-11-03T03:20:00Z",
+      "legalEntityId": "le-demo-north",
+      "documentRef": "PAY-DEMO-005",
+      "requestedAmount": "5000000",
+      "simulatedSourceAmount": "4800000",
+      "currency": "VND",
+      "expectedStatus": "simulated-reconciliation-required",
+      "expectedHandling": "Hiển thị chênh lệch 200000 VND, nguồn và thời điểm; yêu cầu người có quyền xử lý."
+    }
+  ]
+}

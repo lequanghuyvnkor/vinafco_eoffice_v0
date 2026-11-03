@@ -1,0 +1,58 @@
+{
+  "datasetType": "synthetic-integration-fixture",
+  "datasetVersion": "1.0.0",
+  "isSimulation": true,
+  "simulationOnly": true,
+  "sourceSystem": "SIMULATED-TMS-WMS",
+  "records": [
+    {
+      "id": "OPS-DEMO-001",
+      "event": "shipment.completed",
+      "occurredAt": "2026-11-03T02:00:00Z",
+      "externalTripId": "TRIP-DEMO-001",
+      "revision": 3,
+      "legalEntityId": "le-demo-north",
+      "serviceCode": "DEMO-LOCAL-HAUL",
+      "currency": "VND",
+      "amount": "12850000",
+      "evidence": [{ "documentId": "doc-demo-delivery-001", "fileName": "bien-ban-giao-nhan-mau-001.pdf", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" }],
+      "expectedStatus": "simulated-confirmed",
+      "expectedHandling": "Dữ liệu nguồn mô phỏng đủ để gắn vào hồ sơ thử; không tạo công nợ hay bút toán thật."
+    },
+    {
+      "id": "OPS-DEMO-002",
+      "event": "shipment.completed",
+      "occurredAt": "2026-11-03T02:05:00Z",
+      "externalTripId": "TRIP-DEMO-002",
+      "revision": 2,
+      "legalEntityId": "le-demo-south",
+      "serviceCode": "DEMO-CROSSDOCK",
+      "currency": "VND",
+      "amount": "9400000",
+      "deliveredQuantity": "18",
+      "acceptedQuantity": "17",
+      "expectedStatus": "simulated-reconciliation-required",
+      "expectedHandling": "Hiện sai lệch một đơn vị và chờ người phụ trách xác nhận; không tự sửa số lượng nguồn."
+    },
+    {
+      "id": "OPS-DEMO-003",
+      "event": "shipment.revised",
+      "occurredAt": "2026-11-03T02:10:00Z",
+      "externalTripId": "TRIP-DEMO-001",
+      "revision": 4,
+      "supersedesRevision": 3,
+      "legalEntityId": "le-demo-north",
+      "amount": "13000000",
+      "expectedStatus": "simulated-stale-revision",
+      "expectedHandling": "Đánh dấu snapshot revision 3 là cũ để review; không âm thầm thay dữ liệu đã được duyệt."
+    },
+    {
+      "id": "OPS-DEMO-004",
+      "event": "source.query_timeout",
+      "occurredAt": "2026-11-03T02:15:00Z",
+      "externalTripId": "TRIP-DEMO-004",
+      "expectedStatus": "simulated-unknown",
+      "expectedHandling": "Đặt trạng thái chưa rõ và yêu cầu tra cứu/đối soát trước khi gửi lại."
+    }
+  ]
+}

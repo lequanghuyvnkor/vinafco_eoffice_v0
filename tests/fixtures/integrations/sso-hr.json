@@ -1,0 +1,68 @@
+{
+  "datasetType": "synthetic-integration-fixture",
+  "datasetVersion": "1.0.0",
+  "isSimulation": true,
+  "simulationOnly": true,
+  "sourceSystem": "SIMULATED-SSO-HR",
+  "records": [
+    {
+      "id": "ID-SYNC-001",
+      "event": "person.created",
+      "occurredAt": "2026-11-03T01:00:00Z",
+      "externalPersonId": "HR-DEMO-001",
+      "email": "minh.an@example.invalid",
+      "displayName": "Nguyễn Minh An",
+      "employmentStatus": "active",
+      "assignments": [{ "entityId": "le-demo-north", "unitCode": "DEMO-OPS-N", "role": "requester", "effectiveFrom": "2026-01-01" }],
+      "expectedStatus": "simulated-applied",
+      "expectedHandling": "Tạo identity fixture và role assignment hiệu lực; không tạo tài khoản ở IdP thật."
+    },
+    {
+      "id": "ID-SYNC-002",
+      "event": "assignment.changed",
+      "occurredAt": "2026-11-03T01:05:00Z",
+      "externalPersonId": "HR-DEMO-002",
+      "email": "gia.bao@example.invalid",
+      "displayName": "Trần Gia Bảo",
+      "employmentStatus": "active",
+      "assignments": [
+        { "entityId": "le-demo-north", "unitCode": "DEMO-FIN-N", "role": "accountant", "effectiveFrom": "2026-01-01" },
+        { "entityId": "le-demo-south", "unitCode": "DEMO-FIN-S", "role": "approver", "effectiveFrom": "2026-02-01" }
+      ],
+      "expectedStatus": "simulated-applied",
+      "expectedHandling": "Giữ hai assignment có pháp nhân riêng; màn hình phải hiển thị context hiện hành."
+    },
+    {
+      "id": "ID-SYNC-003",
+      "event": "employment.ended",
+      "occurredAt": "2026-11-03T01:10:00Z",
+      "externalPersonId": "HR-DEMO-003",
+      "email": "thu.ha@example.invalid",
+      "displayName": "Lê Thu Hà",
+      "employmentStatus": "inactive",
+      "assignments": [],
+      "expectedStatus": "simulated-revoked",
+      "expectedHandling": "Đánh dấu nguồn nghỉ việc và mô phỏng thu hồi session/assignment; ghi audit trong hệ thống thử."
+    },
+    {
+      "id": "ID-SYNC-004",
+      "event": "assignment.changed",
+      "occurredAt": "2026-11-03T01:15:00Z",
+      "externalPersonId": "HR-DEMO-004",
+      "email": "unknown@example.invalid",
+      "displayName": "Người Dùng Chưa Khớp",
+      "employmentStatus": "active",
+      "assignments": [{ "entityId": "le-demo-unknown", "unitCode": "UNKNOWN", "role": "approver", "effectiveFrom": "2026-11-03" }],
+      "expectedStatus": "simulated-rejected",
+      "expectedHandling": "Không tự tạo pháp nhân hoặc quyền khi external entity mapping chưa biết; đưa vào hàng chờ xử lý fixture."
+    },
+    {
+      "id": "ID-SYNC-005",
+      "event": "sync.timeout",
+      "occurredAt": "2026-11-03T01:20:00Z",
+      "externalPersonId": "HR-DEMO-001",
+      "expectedStatus": "simulated-unknown",
+      "expectedHandling": "Không giả định đồng bộ thất bại hay thành công; truy vấn lại bằng correlation id trước khi retry."
+    }
+  ]
+}

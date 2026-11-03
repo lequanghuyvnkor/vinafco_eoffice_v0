@@ -1,0 +1,30 @@
+{
+  "datasetType": "synthetic-integration-fixture",
+  "datasetVersion": "1.0.0",
+  "isSimulation": true,
+  "simulationOnly": true,
+  "createdAt": "2026-11-03T00:00:00Z",
+  "entities": [
+    { "id": "le-demo-north", "name": "Pháp nhân Mẫu Bắc", "externalCode": "DEMO-LE-N", "isSynthetic": true },
+    { "id": "le-demo-south", "name": "Pháp nhân Mẫu Nam", "externalCode": "DEMO-LE-S", "isSynthetic": true }
+  ],
+  "users": [
+    { "id": "usr-demo-001", "displayName": "Nguyễn Minh An", "email": "minh.an@example.invalid", "entityIds": ["le-demo-north"], "roles": ["requester"], "isSynthetic": true },
+    { "id": "usr-demo-002", "displayName": "Trần Gia Bảo", "email": "gia.bao@example.invalid", "entityIds": ["le-demo-north", "le-demo-south"], "roles": ["approver", "accountant"], "isSynthetic": true },
+    { "id": "usr-demo-003", "displayName": "Lê Thu Hà", "email": "thu.ha@example.invalid", "entityIds": ["le-demo-south"], "roles": ["approver"], "isSynthetic": true }
+  ],
+  "scenarios": [
+    { "id": "SCN-IDENTITY-01", "fixture": "sso-hr.json", "purpose": "Đồng bộ mới và gán vai trò theo pháp nhân", "expectedStatus": "simulated-applied" },
+    { "id": "SCN-IDENTITY-02", "fixture": "sso-hr.json", "purpose": "Người kiêm nhiệm hai pháp nhân", "expectedStatus": "simulated-applied" },
+    { "id": "SCN-IDENTITY-03", "fixture": "sso-hr.json", "purpose": "Nghỉ việc và thu hồi quyền", "expectedStatus": "simulated-revoked" },
+    { "id": "SCN-TMS-01", "fixture": "tms-wms.json", "purpose": "Chuyến có nghiệm thu đủ", "expectedStatus": "simulated-confirmed" },
+    { "id": "SCN-TMS-02", "fixture": "tms-wms.json", "purpose": "Khối lượng giao nhận bị lệch", "expectedStatus": "simulated-reconciliation-required" },
+    { "id": "SCN-TMS-03", "fixture": "tms-wms.json", "purpose": "Timeout khi tra nguồn", "expectedStatus": "simulated-unknown" },
+    { "id": "SCN-BRAVO-01", "fixture": "bravo.json", "purpose": "Gửi lặp cùng khóa chống trùng", "expectedStatus": "simulated-duplicate" },
+    { "id": "SCN-BRAVO-02", "fixture": "bravo.json", "purpose": "Timeout chưa biết nguồn đã nhận chưa", "expectedStatus": "simulated-unknown" },
+    { "id": "SCN-BRAVO-03", "fixture": "bravo.json", "purpose": "Lệch số tiền khi đối soát", "expectedStatus": "simulated-reconciliation-required" },
+    { "id": "SCN-CA-01", "fixture": "ca-hsm.json", "purpose": "Mô phỏng tạo artifact ký; không phải chữ ký thật", "expectedStatus": "simulated-signature-produced" },
+    { "id": "SCN-CA-02", "fixture": "ca-hsm.json", "purpose": "Hash tài liệu thay đổi trong lúc ký", "expectedStatus": "simulated-rejected" },
+    { "id": "SCN-CA-03", "fixture": "ca-hsm.json", "purpose": "Yêu cầu chưa có kết quả cuối", "expectedStatus": "simulated-pending" }
+  ]
+}

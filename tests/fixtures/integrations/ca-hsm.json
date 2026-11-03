@@ -1,0 +1,62 @@
+{
+  "datasetType": "synthetic-integration-fixture",
+  "datasetVersion": "1.0.0",
+  "isSimulation": true,
+  "simulationOnly": true,
+  "sourceSystem": "SIMULATED-CA-HSM",
+  "records": [
+    {
+      "id": "SIG-DEMO-001",
+      "requestId": "sigreq-demo-001",
+      "event": "signature.requested",
+      "occurredAt": "2026-11-03T04:00:00Z",
+      "documentId": "doc-demo-dossier-001",
+      "documentRevision": 2,
+      "inputSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "actorId": "usr-demo-002",
+      "expectedStatus": "simulated-signature-produced",
+      "simulatedCertificateId": "CERT-DEMO-NOT-REAL",
+      "simulatedArtifactRef": "artifact-demo-signature-001",
+      "cryptographicVerification": "not-performed",
+      "expectedHandling": "Chỉ minh họa tiến trình và receipt UI. Không phải chữ ký số, chứng thư hay bằng chứng pháp lý."
+    },
+    {
+      "id": "SIG-DEMO-002",
+      "requestId": "sigreq-demo-002",
+      "event": "signature.input_changed",
+      "occurredAt": "2026-11-03T04:05:00Z",
+      "documentId": "doc-demo-dossier-002",
+      "documentRevision": 4,
+      "requestedInputSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "returnedInputSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "expectedStatus": "simulated-rejected",
+      "cryptographicVerification": "not-performed",
+      "expectedHandling": "Từ chối kết quả vì hash đầu vào không khớp; yêu cầu tạo request mới từ revision hiện hành."
+    },
+    {
+      "id": "SIG-DEMO-003",
+      "requestId": "sigreq-demo-003",
+      "event": "signature.awaiting_user_authentication",
+      "occurredAt": "2026-11-03T04:10:00Z",
+      "documentId": "doc-demo-dossier-003",
+      "documentRevision": 1,
+      "inputSha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "expectedStatus": "simulated-pending",
+      "cryptographicVerification": "not-performed",
+      "expectedHandling": "Giữ pending tới khi có kết quả cuối; không hiện thành công khi người dùng chưa xác thực."
+    },
+    {
+      "id": "SIG-DEMO-004",
+      "requestId": "sigreq-demo-004",
+      "event": "signature.failed",
+      "occurredAt": "2026-11-03T04:15:00Z",
+      "documentId": "doc-demo-dossier-004",
+      "documentRevision": 1,
+      "inputSha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "simulatedErrorCode": "SIM_CERT_EXPIRED",
+      "expectedStatus": "simulated-failed",
+      "cryptographicVerification": "not-performed",
+      "expectedHandling": "Hiện lỗi mô phỏng và cho phép tạo yêu cầu mới theo policy; không tự retry thao tác ký."
+    }
+  ]
+}
